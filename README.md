@@ -1,15 +1,12 @@
-# 🤖 AIQL Chatbot UI agent
+# 🤖 ChatUI agent
 
 > 一款运行在浏览器中的云原生 AI 聊天机器人界面，内置 Pyodide Python 运行时与 MCP 工具链，帮助你在浏览器中一站式完成 AI 对话、代码执行与文件处理。
-
-![GitHub](https://img.shields.io/badge/GitHub-AI--QL-blue)
-![License](https://img.shields.io/badge/License-Apache--2.0-green)
 
 ---
 
 ## 📖 项目简介
 
-**AIQL Chatbot UI** 是 AIQL.COM 开源的一套聊天机器人前端界面。它采用 Vue 3 + Vuetify 构建，以纯静态 HTML 形式呈现，无需 Node.js 构建即可直接运行。
+**ChatUI agent** 是 hill289 开源的一套聊天机器人前端界面。它采用 Vue 3 + Vuetify 构建，以纯静态 HTML 形式呈现，无需 Node.js 构建即可直接运行。
 
 该界面不仅是一个普通的 AI 聊天框，还内置了：
 
@@ -72,9 +69,6 @@
 ### 📜 历史记录
 - 会话自动保存在浏览器 **localStorage** 中
 - 支持查看、选择、删除、下载单条/全部历史（JSON）
-
-### 🌐 多语言
-- English / Italiano / 日本語 / Svenska / 简体中文
 
 ---
 
@@ -176,7 +170,7 @@ unzip dist2.zip
 
 ## 📄 许可证
 
-Copyright hill289@163.com
+Copyright hill289
 
 Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
@@ -199,5 +193,3 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 - 所有开源依赖的作者与维护者
 
 ---
-
-*本文档根据 `index.html` 源码整理，如有出入请以源码为准。*
