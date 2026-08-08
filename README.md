@@ -183,7 +183,7 @@ Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/
 - [lottie-web](https://github.com/airbnb/lottie-web)
 - [vuedraggable](https://github.com/SortableJS/vue.draggable.next)
 - [mammoth](https://github.com/mwilliamson/mammoth.js)
-
+- [anydoc](https://github.com/firecrawl/anydoc)
 ---
 
 ## 🙏 致谢
