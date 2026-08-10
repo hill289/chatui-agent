@@ -1,4 +1,4 @@
-# 🤖 ChatUI agent
+# 🤖 chatui agent
 
 > 一款运行在浏览器中的云原生 AI 聊天机器人界面，内置 Pyodide Python 运行时与 MCP 工具链，帮助你在浏览器中一站式完成 AI 对话、代码执行与文件处理。
 
@@ -6,11 +6,11 @@
 
 ## 📖 项目简介
 
-**ChatUI agent** 是 hill289 开源的一套聊天机器人前端界面。它采用 Vue 3 + Vuetify 构建，以纯静态 HTML 形式呈现，无需 Node.js 构建即可直接运行。
+**chatui agent** 是 hill289 开源的一套聊天机器人前端界面。它采用 Vue 3 + Vuetify 构建，以纯静态 HTML 形式呈现，无需 Node.js 构建即可直接运行。
 
 该界面不仅是一个普通的 AI 聊天框，还内置了：
 
-- **PGPy 编辑器**：基于 Pyodide（WebAssembly）的浏览器内 Python 运行环境，可执行 Python 代码、操作虚拟文件系统；
+- **Py 编辑器**：基于 Pyodide（WebAssembly）的浏览器内 Python 运行环境，可执行 Python 代码、操作虚拟文件系统；
 - **MCP 工具服务**：内置 `filesystem-service`，提供文件读写、搜索、编辑等 8 个工具，供大模型（LLM）调用；
 - **智能体看板**：拖拽式卡片管理，可将任务描述注入为系统提示词；
 
@@ -27,7 +27,7 @@
 - Markdown 渲染、代码折叠
 - 消息自动滚动到底部
 
-### 🐍 PGPy Python 编辑器
+### 🐍 Py Python 编辑器
 - 基于 **Pyodide**（Python 在浏览器中通过 WebAssembly 运行）
 - CodeMirror 5 编辑器：行号、括号匹配、自动补全、撤销/重做
 - 快捷键：`Ctrl + Enter` 运行
@@ -51,8 +51,8 @@
 
 | 工具名 | 说明 |
 | --- | --- |
-| `read_file` | 读取文件内容（支持文本、图片、PDF、Jupyter Notebook） |
-| `write_file` | 写入文件（自动创建父目录） |
+| `read_file` | 读取文件内容 |
+| `write_file` | 写入文件 |
 | `delete_file` | 删除文件或目录 |
 | `add_content` | 按行号在指定行前插入内容 |
 | `delete_content` | 按行号范围删除内容 |
