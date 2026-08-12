@@ -1,6 +1,6 @@
 # 🤖 chatui agent
 
-> 一款运行在浏览器中的云原生 AI 聊天机器人界面，内置 Pyodide Python 运行时与 MCP 工具链，帮助你在浏览器中一站式完成 AI 对话、代码执行与文件处理。
+> 一款运行在浏览器中的云原生 AI 聊天机器人界面，内置 Pyodide Python 运行时与 MCP 工具链，帮助你在浏览器中一站式完成 AI 对话、代码执行与文件处理。这个项目展示了 WebAssembly 时代的可能性：传统上需要服务器的功能（Python 运行时、文件系统），现在都能在浏览器实现。MCP 协议让 AI 工具调用标准化，Subagent 架构为复杂任务分解提供了优雅方案，最重要的是：它证明了”去中心化 AI 应用”的可行性。用户数据不必离开本地设备，同时享受完整的 AI 能力。
 
 ---
 
@@ -8,67 +8,79 @@
 
 **chatui agent** 是 hill289 开源的一套聊天机器人前端界面。它采用 Vue 3 + Vuetify 构建，以纯静态 HTML 形式呈现，无需 Node.js 构建即可直接运行。
 
-该界面不仅是一个普通的 AI 聊天框，还内置了：
+这是一个完全在浏览器中运行的 AI 智能助手系统，但它远不止是个聊天界面那么简单。
 
-- **Py 编辑器**：基于 Pyodide（WebAssembly）的浏览器内 Python 运行环境，可执行 Python 代码、操作虚拟文件系统；
-- **MCP 工具服务**：内置 `filesystem-service`，提供文件读写、搜索、编辑等 8 个工具，供大模型（LLM）调用；
-- **智能体看板**：拖拽式卡片管理，可将任务描述注入为系统提示词；
+想象一下：
+
+✅ 在浏览器里直接运行 Python 代码（是的，真实的 Python！）
+
+✅ AI 能读写文件、搜索内容、执行代码
+
+✅ 支持处理 Word、Excel、PowerPoint、PDF 文档
+
+✅ 完整的文件系统操作，还能导出/导入 ZIP
+
+✅ 子任务代理（Subagent）机制，让 AI 分解复杂任务
+
+✅ 所有这些都在本地浏览器完成，无需后端服务器
 
 ---
 
 ## ✨ 功能特性
 
-### 💬 聊天功能
-- 兼容 **OpenAI Chat Completions** 协议（支持自定义 URL / 路径 / 模型）
-- 支持 **流式输出（Stream）** 与普通输出
-- 支持上传**图片**并以 `image_url` 形式发送（多模态）
-- 支持消息**复制、编辑、删除、重新生成、发起新对话**
-- 支持 **Reasoning Content（思维链）** 展示与折叠
-- Markdown 渲染、代码折叠
-- 消息自动滚动到底部
+🔒 隐私优先
 
-### 🐍 Py Python 编辑器
-- 基于 **Pyodide**（Python 在浏览器中通过 WebAssembly 运行）
-- CodeMirror 5 编辑器：行号、括号匹配、自动补全、撤销/重做
-- 快捷键：`Ctrl + Enter` 运行
-- 内置示例：Hello World / Fibonacci / 列表推导 / Micropip
-- 执行结果支持：
-  - 文本输出（stdout / stderr）
-  - **表格渲染**（可点击列头排序）
-  - **导出 Excel**（.xlsx，基于 SheetJS）
-- Python 脚本历史记录（localStorage 保存，最多 50 条）
-- **AI 模式**：将编辑器中的代码发送给聊天模型，由 AI 分析/运行
+所有处理在浏览器本地完成
 
-### 📁 文件系统（Pyodide FS）
-- 导入文件或 ZIP 压缩包到浏览器虚拟文件系统
-- 导出整个工作区为 ZIP 下载
-- 文件列表浏览：支持文本预览、Office 文档解析预览
-- **Office 文档解析**（基于 @iyulab/anydoc / mammoth）：
-  - `.docx / .xlsx / .pptx / .xls / .pdf` 自动转为 Markdown/文本预览
+除AI API调用外，无数据上传
 
-### 🛠️ MCP 工具（filesystem-service）
-内置 8 个工具，供 LLM 在对话中自动调用：
+完全掌控你的文件和代码
 
-| 工具名 | 说明 |
-| --- | --- |
-| `read_file` | 读取文件内容 |
-| `write_file` | 写入文件 |
-| `delete_file` | 删除文件或目录 |
-| `add_content` | 按行号在指定行前插入内容 |
-| `delete_content` | 按行号范围删除内容 |
-| `replace_content` | 按行号范围替换内容 |
-| `search_content` | 使用正则表达式搜索文件内容 |
-| `run_python` | 在本地 Pyodide 沙箱中运行 Python 代码 |
+🐍 真实Python运行时
 
-### 🧠 智能体看板（Agent）
-- 看板式任务管理（PROMPT / BACKUP 两列），卡片支持**拖拽排序**
-- 卡片可填写任务描述与**参考文件**（.docx / .md / .txt）
-- 启用后，卡片内容会作为 **System Prompt** 注入对话，辅助 AI 完成任务
+基于Pyodide (Python 3.11 + WebAssembly)
 
-### 📜 历史记录
-- 会话自动保存在浏览器 **localStorage** 中
-- 支持查看、选择、删除、下载单条/全部历史（JSON）
+支持NumPy、Pandas、Matplotlib等库
 
+浏览器沙箱中直接执行Python代码
+
+📁 虚拟文件系统
+
+完整的POSIX文件操作（读、写、搜索、编辑）
+
+处理Word (.docx)、Excel (.xlsx)、PowerPoint (.pptx)、PDF文档
+
+导出/导入工作区为ZIP
+
+🛠️ MCP工具系统
+
+read_file - 智能文档解析（文本、图片、Office文件、PDF）
+
+write_file - 创建和修改文件
+
+search_content - 基于正则的内容搜索
+
+replace_content / add_content / delete_content - 精确编辑
+
+run_python - 执行Python代码（完整标准库支持）
+
+run_subagent - 将复杂任务委托给专注的子代理
+
+🤖 子代理架构
+
+将复杂任务分解为可管理的子任务
+
+独立对话窗口进行专注处理
+
+自动任务队列管理防止冲突
+
+🎯 使用场景
+场景	说明
+数据分析	分析CSV/Excel文件，生成可视化，无需后端
+文档处理	批量转换、合并或提取Office文档内容
+代码原型	在隔离环境中用AI辅助测试Python片段
+隐私敏感工作	处理机密文件而不上传云端
+教育	无需安装即可教授Python + AI概念
 ---
 
 ## 🧰 技术栈
@@ -139,22 +151,22 @@ unzip dist2.zip
 
 ## 🗂️ 目录结构（参考）
 
-```
+```bash
 .
 ├── index.html                     # 单页应用入口（全部代码）
-├── dist2/                         # Pyodide 运行时
-│   └── bundle.js
-├── vue.global.prod.min.js         # Vue 3
-├── vuetify.min.js / .css          # Vuetify
-├── pinia.iife.prod.js             # Pinia
+├── dist2/                         # Pyodide 运行时目录
+│   └── bundle.js                  # Pyodide 核心包
+├── vue.global.prod.min.js         # Vue 3 运行时
+├── vuetify.min.js                 # Vuetify 组件库
+├── vuetify.min.css                # Vuetify 样式
+├── pinia.iife.prod.js             # Pinia 状态管理
 ├── md-editor-index.js             # Markdown 编辑器
-├── lottie.min.js                  # Lottie 动画
+├── lottie.min.js                  # Lottie 动画库
 ├── mammoth.browser.min.js         # Word 文档解析
 ├── anydoc_wasm_b64.js             # Office/PDF → Markdown（WASM）
-├── codemirror.min.js              # CodeMirror 5
+├── codemirror.min.js              # CodeMirror 5 代码编辑器
 ├── xlsx.full.min.js               # Excel 导出
-├── jszip.min.js                   # ZIP 导入/导出
-└── ...                            # 其他静态资源
+└── jszip.min.js                   # ZIP 压缩/解压
 ```
 
 ---
