@@ -1,5 +1,4 @@
 <!--
-
   @Component: Chatbot UI
 
   @Github: https://github.com/AI-QL
@@ -72,20 +71,20 @@
                 transform: rotate(360deg);
             }
         }
-		
-		.status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .status-badge.loading { background: var(--warning-bg); color: #92400e; }
-    .status-badge.success { background: var(--success-bg); color: #166534; }
-    .status-badge.error   { background: var(--error-bg); color: #991b1b; }
-		
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-badge.loading { background: var(--warning-bg); color: #92400e; }
+        .status-badge.success { background: var(--success-bg); color: #166534; }
+        .status-badge.error   { background: var(--error-bg); color: #991b1b; }
+
     </style>
     <div id="loading" class="loading"></div>
 
@@ -125,14 +124,14 @@
     <!-- Vue Draggable -->
     <script src="Sortable.min.js"></script>
     <script src="vuedraggable.umd.min.js"></script>
-	<script src="dist2/bundle.js"></script>
+    <script src="dist2/bundle.js"></script>
 
     <!-- CodeMirror 5 for PGPy Editor -->
     <link rel="stylesheet" href="./codemirror.min.css">
     <link rel="stylesheet" href="./show-hint.min.css">
     <link rel="stylesheet" href="./material-darker.min.css">
     <script src="./codemirror.min.js"></script>
-	<script src="./python.min.js"></script>
+    <script src="./python.min.js"></script>
     <script src="./show-hint.min.js"></script>
     <script src="./matchbrackets.min.js"></script>
     <script src="./closebrackets.min.js"></script>
@@ -140,9 +139,9 @@
     <script src="./xlsx.full.min.js"></script>
     <!-- JSZip for ZIP import -->
     <script src="./jszip.min.js"></script>
-	<script src="./gnu_grep.js"></script>
+    <script src="./gnu_grep.js"></script>
     <script>
-	// ══════════════════════════════════════════════
+    // ══════════════════════════════════════════════
     //  PGPy Engine Readiness (these get called after DOM is ready)
     // ══════════════════════════════════════════════
     let pyodideReady = false;
@@ -189,7 +188,7 @@
       }
     }
 
-	async function initPyodide() {
+    async function initPyodide() {
       const statusEl = document.getElementById('status');
       try {
         statusEl.className = 'status-badge loading';
@@ -205,9 +204,7 @@
         console.error('Pyodide init error:', err);
       }
     }
-	
 
-	
         window.onload = function () {
             const lottie = document.getElementById('lottie');
             if (lottie) lottie.style.display = 'block';
@@ -421,6 +418,171 @@
             background-color: grey;
         }
 
+        /* ─── Subagent dialog specific styles ─── */
+        .subagent-dialog {
+            width: 820px;
+            max-width: 95vw;
+            max-height: 85vh;
+        }
+        .subagent-dialog .v-card {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .subagent-dialog .subagent-chat-area {
+            max-height: 55vh;
+            overflow-y: auto;
+            padding: 8px 4px 4px 4px;
+            background: #f8fafc;
+            scroll-behavior: smooth;
+        }
+        .subagent-dialog .subagent-chat-area .chat-message {
+            border-bottom: 1px solid #e9edf2;
+        }
+        .subagent-dialog .subagent-input-area {
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 8px 16px 12px 16px;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .subagent-dialog .subagent-input-area textarea {
+            flex: 1;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.2s;
+            min-height: 40px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+        .subagent-dialog .subagent-input-area textarea:focus {
+            border-color: #1867C0;
+            box-shadow: 0 0 0 3px rgba(24, 103, 192, 0.15);
+        }
+        .subagent-dialog .subagent-input-area .subagent-send-btn {
+            background: #1867C0;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+        .subagent-dialog .subagent-input-area .subagent-send-btn:hover {
+            background: #1557a8;
+        }
+        .subagent-dialog .subagent-input-area .subagent-send-btn:disabled {
+            background: #a0b8d0;
+            cursor: not-allowed;
+        }
+        .subagent-dialog .subagent-input-area .subagent-send-btn .mdi {
+            font-size: 20px;
+        }
+        .subagent-dialog .subagent-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #94a3b8;
+            font-size: 15px;
+        }
+        .subagent-dialog .subagent-empty-state .mdi {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+        .subagent-dialog .tuui-chat-card .v-card-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        /* Ensure markdown preview inside subagent is readable */
+        .subagent-dialog .md-preview {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .subagent-dialog .md-preview p {
+            margin-bottom: 6px;
+        }
+        /* toolbar inside subagent dialog */
+        .subagent-dialog .subagent-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .subagent-dialog .subagent-toolbar .subagent-toolbar-btn {
+            background: transparent;
+            border: none;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.15s;
+        }
+        .subagent-dialog .subagent-toolbar .subagent-toolbar-btn:hover {
+            background: #e2e8f0;
+        }
+        .subagent-dialog .subagent-toolbar .subagent-toolbar-btn .mdi {
+            font-size: 16px;
+        }
+        .subagent-dialog .subagent-toolbar .subagent-spacer {
+            flex: 1;
+        }
+        .subagent-dialog .subagent-toolbar .subagent-badge {
+            font-size: 11px;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        /* Override some vuetify styles inside subagent dialog */
+        .subagent-dialog .v-avatar {
+            width: 28px !important;
+            height: 28px !important;
+            font-size: 14px !important;
+        }
+        .subagent-dialog .chat-message {
+            padding: 6px 2px;
+        }
+        .subagent-dialog .message {
+            gap: 6px;
+        }
+        .subagent-dialog .conversation-area {
+            margin: 2px 0;
+        }
+        .subagent-dialog .v-card-text {
+            padding: 4px 8px;
+        }
+        /* scrollbar for subagent chat area */
+        .subagent-dialog .subagent-chat-area::-webkit-scrollbar {
+            display: block;
+            width: 4px;
+        }
+        .subagent-dialog .subagent-chat-area::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .subagent-dialog .subagent-chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
     </style>
 
     <!-- pgpy-editor styles -->
@@ -768,6 +930,10 @@
                                 v-tooltip:end="$t('$vuetify.dataIterator.q.title')">
                             </v-btn>
                         </v-badge>
+                        <!-- ─── NEW: Subagent button ─── -->
+                        <v-btn variant="elevated" icon="mdi-robot-outline" @click="settingStore.subagentDialog = true"
+                            v-tooltip:end="'Subagent Chat'">
+                        </v-btn>
                     </v-speed-dial>
                     <v-container>
                         <v-row>
@@ -1253,6 +1419,111 @@
                 </v-card>
             </v-dialog>
 
+            <!-- ════════════════════════════════════════════════════════════ -->
+            <!--  SUBAGENT DIALOG                                           -->
+            <!-- ════════════════════════════════════════════════════════════ -->
+            <v-dialog v-model="settingStore.subagentDialog" class="subagent-dialog" persistent>
+                <v-card>
+                    <!-- Header -->
+                    <v-card-title class="d-flex align-center pa-3" style="background:#f1f5f9;border-bottom:1px solid #e2e8f0;">
+                        <span class="flex-fill font-weight-bold" style="font-size:16px;">
+                            🤖 Subagent Chat
+                            <span style="font-size:12px;font-weight:400;color:#64748b;margin-left:8px;">
+                                (independent session)
+                            </span>
+                        </span>
+                        <v-btn variant="text" icon="mdi-close" size="small" @click="settingStore.subagentDialog = false"></v-btn>
+                    </v-card-title>
+
+                    <!-- Toolbar -->
+                    <div class="subagent-toolbar">
+                        <button class="subagent-toolbar-btn" @click="subagentStore.clearConversation()" title="Clear chat">
+                            <span class="mdi mdi-delete-outline"></span> Clear
+                        </button>
+                        <button class="subagent-toolbar-btn" @click="subagentStore.exportConversation()" title="Export chat">
+                            <span class="mdi mdi-download"></span> Export
+                        </button>
+                        <span class="subagent-spacer"></span>
+                        <span class="subagent-badge" v-if="subagentStore.taskQueue.length > 0">
+							{{ subagentStore.taskQueue.length }} pending
+						</span>
+                    </div>
+
+                    <!-- Chat area -->
+                    <div class="subagent-chat-area" ref="subagentChatContainer" id="subagentChatContainer">
+                        <!-- Messages -->
+                        <div v-if="subagentStore.conversation.length === 0" class="subagent-empty-state">
+                            <span class="mdi mdi-robot-outline"></span>
+                            <span>Start a conversation with the subagent</span>
+                            <span style="font-size:13px;color:#b0b8c4;">Messages are independent from the main chat</span>
+                        </div>
+                        <div v-else>
+                            <div v-for="(msg, idx) in subagentStore.conversation" :key="idx" class="chat-message px-2 py-3">
+                                <div class="message">
+                                    <v-avatar :size="28" class="mt-1 mr-2" :color="msg.role === 'user' ? 'primary' : 'teal'"
+                                        :icon="msg.role === 'user' ? 'mdi-account-circle' : 'mdi-lightning-bolt-circle'">
+                                    </v-avatar>
+                                    <div style="flex:1;min-width:0;">
+                                        <div v-if="typeof msg.content === 'string'" class="md-preview" style="font-size:14px;line-height:1.6;">
+                                            <div v-if="msg.role === 'assistant'">
+                                                <md-preview :model-value="msg.content" :language="languageStore.getLocale == 'zhHans' ? 'zh-CN' : 'en-US'" :code-foldable="true" auto-fold-threshold="Infinity"></md-preview>
+                                            </div>
+                                            <div v-else style="white-space:pre-wrap;word-break:break-word;">{{ msg.content }}</div>
+                                        </div>
+                                        <div v-else-if="Array.isArray(msg.content)" style="font-size:14px;line-height:1.6;">
+                                            <div v-for="(part, pi) in msg.content" :key="pi">
+                                                <div v-if="part.type === 'text'">{{ part.text }}</div>
+                                                <div v-else-if="part.type === 'image_url'">
+                                                    <img :src="part.image_url.url" style="max-width:200px;max-height:200px;border-radius:8px;margin:4px 0;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Tool calls (assistant) -->
+                                        <div v-if="msg.tool_calls && msg.tool_calls.length > 0" style="margin-top:4px;">
+                                            <div v-for="tc in msg.tool_calls" :key="tc.id" style="font-size:12px;color:#64748b;background:#f1f5f9;padding:4px 10px;border-radius:6px;margin:2px 0;">
+                                                🔧 <strong>{{ tc.function.name }}</strong>({{ tc.function.arguments }})
+                                            </div>
+                                        </div>
+                                        <!-- Tool response (tool role) -->
+                                        <div v-if="msg.role === 'tool'" style="font-size:13px;color:#475569;background:#f8fafc;padding:6px 12px;border-radius:6px;margin-top:2px;border-left:3px solid #94a3b8;">
+                                            <span style="font-weight:600;color:#64748b;">🔧 Tool result:</span>
+                                            <span style="white-space:pre-wrap;word-break:break-word;">{{ msg.content }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Typing indicator -->
+                            <div v-if="subagentStore.generating" class="px-2 py-2" style="display:flex;align-items:center;gap:8px;color:#94a3b8;font-size:13px;">
+                                <span class="mdi mdi-loading mdi-spin" style="font-size:18px;"></span> Subagent is thinking...
+                            </div>
+                        </div>
+                    </div>
+					<!-- 在聊天区域和输入框之间 -->
+					<div v-if="subagentStore.isRunningTask" style="padding:4px 12px;background:#fef9c3;border-radius:4px;font-size:13px;color:#92400e;margin:0 16px;">
+						⏳ Subagent is executing task... (please wait)
+					</div>
+                    <!-- Input area -->
+                    <div class="subagent-input-area">
+                        <textarea
+                            v-model="subagentStore.userMessage"
+                            @keydown="subagentStore.handleKeydown"
+                            placeholder="Type a message..."
+                            rows="1"
+                            ref="subagentInput"
+                            :disabled="subagentStore.isRunningTask"
+                            style="flex:1;"
+                        ></textarea>
+                        <button
+                            class="subagent-send-btn"
+                            @click="subagentStore.sendMessage"
+                            :disabled="!subagentStore.userMessage || subagentStore.generating"
+                        >
+                            <span class="mdi mdi-arrow-up"></span>
+                        </button>
+                    </div>
+                </v-card>
+            </v-dialog>
+
             <div v-if="settingStore.toolboxShow !== true" class="toolbox-button"
                 @click="settingStore.toolboxShow = true">
                 <v-icon class="rotation text-white">mdi-tools</v-icon>
@@ -1441,536 +1712,504 @@
     </template>
 
     <script lang="ts" setup>
-        const { createApp, ref, reactive, computed, onMounted, watch, nextTick, axios, defineProps, defineComponent } = Vue
+        const { createApp, ref, reactive, computed, onMounted, watch, nextTick, axios, defineProps, defineComponent, onUnmounted } = Vue
         const { createVuetify } = Vuetify
         const { createPinia, defineStore, storeToRefs } = Pinia
         const { createI18n, useI18n } = VueI18n
         const { en, it, ja, sv, zhHans } = 'vuetify/locale'
+
+        function countLines(s) {
+            if (s == null || s === '') {
+                return 0;
+            }
+            const matches = s.match(/\r?\n/g);
+            return (matches ? matches.length : 0) + 1;
+        }
+
+        async function run_python(params){
+            const code = params["code"];
+            const result = await pyodide.runPython(`
+            import io
+            import contextlib
+            import traceback
+
+            _stdout = io.StringIO()
+            _stderr = io.StringIO()
+
+            try:
+                with contextlib.redirect_stdout(_stdout), contextlib.redirect_stderr(_stderr):
+                    exec(${JSON.stringify(code)})
+            except Exception:
+                traceback.print_exc(file=_stderr)
+
+            (_stdout.getvalue(), _stderr.getvalue())
+            `);
+
+            const stdout = result[0];
+            const stderr = result[1];
+            const content = "the python run result:" + (stdout || stderr);
+            const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(content) + "}]}";
+            return data;
+        }
+
+        async function read_file(params){
+            const file_path = params["file_path"];
+            const start_line = params["start_line"];
+            const end_line = params["end_line"];
+
+            if (file_path === '.' || file_path === '/' || file_path === 'home/' || file_path === '/home' || file_path === 'home'|| file_path === '/home/pyodide/') {
+                return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`当前目录是 /home/pyodide/`) + "}]}";
+            }
+
+            if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
+                // Python mode: read from Pyodide FS
+                try {
+                    const binaryContent = pyodide.FS.readFile(file_path, { encoding: 'binary' });
+
+                    // 检测二进制文件（docx/png/jpg/pdf 等）
+                    const isZipOffice = binaryContent.length >= 4 &&
+                        binaryContent[0] === 0x50 && binaryContent[1] === 0x4B &&
+                        (binaryContent[2] === 0x03 || binaryContent[2] === 0x07);
+                    const isOtherBinary = binaryContent.length > 0 && (
+                        (binaryContent[0] === 0x89 && binaryContent[1] === 0x50 && binaryContent[2] === 0x4E && binaryContent[3] === 0x47) || // PNG
+                        (binaryContent[0] === 0xFF && binaryContent[1] === 0xD8) // JPEG
+                    );
+                    // PDF（%PDF 魔数）: 用 @iyulab/anydoc 解析为 Markdown
+                    const isPdf = binaryContent.length >= 4 &&
+                        binaryContent[0] === 0x25 && binaryContent[1] === 0x50 &&
+                        binaryContent[2] === 0x44 && binaryContent[3] === 0x46;
+                    // 旧版 Office 二进制格式（xls/doc/ppt/xlsb 等，OLE2/CFB 容器）
+                    const isOleOffice = binaryContent.length >= 8 &&
+                        binaryContent[0] === 0xD0 && binaryContent[1] === 0xCF &&
+                        binaryContent[2] === 0x11 && binaryContent[3] === 0xE0 &&
+                        binaryContent[4] === 0xA1 && binaryContent[5] === 0xB1 &&
+                        binaryContent[6] === 0x1A && binaryContent[7] === 0xE1;
+
+                    // 文档（docx/xlsx/pptx/xls/pdf 等）: 用 @iyulab/anydoc 解析为 Markdown
+                    if ((isZipOffice || isOleOffice || isPdf) && typeof window.__undocParse === 'function') {
+                        try {
+                            const result = window.__undocParse(binaryContent);
+                            const format = result.format();   // "docx" | "xlsx" | "pptx"
+                            let output = result.toMarkdown();
+                            if (!output || output.trim() === '') {
+                                output = result.toText();  // fallback to plain text
+                            }
+                            // 带文件头信息
+                            const header = `[${format.toUpperCase()}] ${file_path}\n${'='.repeat(40)}\n`;
+                            const finalContent = header + output;
+                            const lines = finalContent.split(/\r?\n/);
+                            const totalLines = lines.length;
+                            const start = start_line ?? 1;
+                            const end = end_line ?? totalLines;
+                            if (start < 1) {
+                                return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`错误：'start_line' 必须是大于等于 1 的整数。`) + "}]}";
+                            }
+                            if (start > totalLines && totalLines > 0) {
+                                return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`Error: 'start_line' (${start}) exceeds total file lines (${totalLines}).`) + "}]}";
+                            }
+                            if (end < start) {
+                                return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`Error: 'end_line' (${end}) cannot be less than 'start_line' (${start}).`) + "}]}";
+                            }
+                            const cappedEnd = Math.min(end, totalLines);
+                            const slicedLines = lines.slice(start - 1, cappedEnd);
+                            const numberedLines = slicedLines.map((line, index) => {
+                                const lineNumber = start + index;
+                                return `${lineNumber}:${line}`;
+                            });
+                            const hasCRLF = finalContent.includes('\r\n');
+                            const lineEnding = hasCRLF ? '\r\n' : '\n';
+                            const finalContentWithLines = numberedLines.join(lineEnding);
+                            return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(JSON.stringify(finalContentWithLines)) + "}]}";
+                        } catch (e) {
+                            return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`解析 Office 文件失败：${e.message}，请尝试 run_python 方式读取。`) + "}]}";
+                        }
+                    }
+
+                    if (isZipOffice || isOleOffice || isPdf || isOtherBinary) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`错误：'${file_path}' 是二进制文件，不支持以文本方式读取，请尝试 run_python 方式读取。`) + "}]}";
+                    }
+
+                    const originalContent = new TextDecoder().decode(binaryContent);
+                    // 解码后正文含 null 字节 → 二进制文件
+                    if (originalContent.includes('\u0000')) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`错误：'${file_path}' 包含非文本数据，不支持以文本方式读取。`) + "}]}";
+                    }
+                    const lines = originalContent.split(/\r?\n/);
+                    const totalLines = lines.length;
+
+                    // 参数缺省值处理与越界校验
+                    const start = start_line ?? 1;
+                    const end = end_line ?? totalLines;
+
+                    if (start < 1) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`错误：'start_line' 必须是大于等于 1 的整数。`) + "}]}";
+                    }
+                    if (start > totalLines && totalLines > 0) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`Error: 'start_line' (${start}) exceeds total file lines (${totalLines}).`) + "}]}";
+                    }
+                    if (end < start) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`Error: 'end_line' (${end}) cannot be less than 'start_line' (${start}).`) + "}]}";
+                    }
+
+                    // 截取指定行范围（slice 是 0-indexed 且右开区间）
+                    const cappedEnd = Math.min(end, totalLines);
+                    const slicedLines = lines.slice(start - 1, cappedEnd);
+
+                    // ===== 新增：为每行添加行号 =====
+                    const numberedLines = slicedLines.map((line, index) => {
+                        const lineNumber = start + index;
+                        return `${lineNumber}:${line}`;
+                    });
+
+                    // 自动恢复原文件的换行符类型
+                    const hasCRLF = originalContent.includes('\r\n');
+                    const lineEnding = hasCRLF ? '\r\n' : '\n';
+                    const finalContent = numberedLines.join(lineEnding);
+
+                    const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(finalContent) + "}]}";
+                    return data;
+                } catch (e) {
+                    const retcontent = file_path + " not exists in Pyodide FS. ";
+                    const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+                    return data;
+                }
+            }
+
+            const retcontent = file_path + " not exists in Pyodide FS. ";
+            const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+            return data;
+        }
+
+        async function write_file(params){
+            const file_path = params["file_path"];
+            const content = params["content"];
+
+            if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
+                // Python mode: write to Pyodide FS
+                try {
+                    // Ensure parent directories exist
+                    const parentDir = file_path.substring(0, file_path.lastIndexOf('/'));
+                    if (parentDir && parentDir !== '') {
+                        try { pyodide.FS.mkdirTree(parentDir); } catch(_) {}
+                    }
+                    const buf = new TextEncoder().encode(content);
+                    pyodide.FS.writeFile(file_path, new Uint8Array(buf));
+                    const result0 = "Written file " + file_path + " (" + countLines(content) + " lines) success.";
+                    const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(result0) + "}]}";
+                    return data;
+                } catch (e) {
+                    const retcontent = "Error writing file " + file_path + " in Pyodide FS: ";
+                    const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+                    return data;
+                }
+            }
+            const retcontent = "Error writing file " + file_path + " in Pyodide FS: ";
+            const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+            return data;
+        }
+
+        async function replace_content(params){
+            const file_path = params["file_path"];
+            const replaceStr = params["replace_content"];
+            const startLine = params["start_line"];
+            const endLine = params["end_line"];
+
+            if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
+                // Python mode: read→modify→write via Pyodide FS
+                try {
+                    const binaryContent = pyodide.FS.readFile(file_path, { encoding: 'binary' });
+                    const originalContent = new TextDecoder().decode(binaryContent);
+                    const hasCRLF = originalContent.includes('\r\n');
+                    const lineEnding = hasCRLF ? '\r\n' : '\n';
+                    const lines = originalContent.split(/\r?\n/);
+
+                    if (!Number.isInteger(endLine) || endLine < 0) {
+                      return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'endLine' 必须是大于等于 0 的整数。`)+"}]}";
+                    }
+                    if (!Number.isInteger(startLine) || startLine < 1) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' 必须是大于等于 1 的整数。`)+"}]}";
+                    }
+
+                    const insertLines = replaceStr === '' ? [] : replaceStr.split(/\r?\n/);
+
+                    if (startLine > endLine) {
+                      return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' (${startLine}) 不能大于 'endLine' (${endLine})。`)+"}]}";
+                    }
+                    if (startLine > lines.length || endLine > lines.length) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：行号范围 [${startLine}, ${endLine}] 越界。当前文件总共只有 ${lines.length} 行。`)+"}]}";
+                    }
+
+                    const deleteCount = endLine - startLine + 1;
+                    lines.splice(startLine - 1, deleteCount, ...insertLines);
+
+                    const updatedContent = lines.join(lineEnding);
+                    const buf = new TextEncoder().encode(updatedContent);
+                    pyodide.FS.writeFile(file_path, new Uint8Array(buf));
+
+                    if(replaceStr === ''){
+                        const retcontent = "Edited the file "+file_path+ " success with remove text from line "+startLine+" to line "+endLine;
+                        const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}"
+                        return data;
+                    } else {
+                        const retcontent = "Edited the file "+file_path+ " success with "+JSON.stringify(replaceStr);
+                        const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}"
+                        return data;
+                    }
+                } catch (e) {
+                    const retcontent = "Error editing file " + file_path + " in Pyodide FS: ";
+                    const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+                    return data;
+                }
+            }
+            const retcontent = "Error editing file " + file_path + " in Pyodide FS: ";
+            const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+            return data;
+        }
+
+        async function add_content(params){
+            const file_path = params["file_path"];
+            const replaceStr = params["add_content"];
+            const startLine = params["line_number"];
+
+            if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
+                // Python mode: read→insert→write via Pyodide FS
+                try {
+                    const binaryContent = pyodide.FS.readFile(file_path, { encoding: 'binary' });
+                    const originalContent = new TextDecoder().decode(binaryContent);
+                    const hasCRLF = originalContent.includes('\r\n');
+                    const lineEnding = hasCRLF ? '\r\n' : '\n';
+                    const lines = originalContent.split(/\r?\n/);
+
+                    if (!Number.isInteger(startLine) || startLine < 1) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' 必须是大于等于 1 的整数。`)+"}]}";
+                    }
+
+                    const insertLines = replaceStr === '' ? [] : replaceStr.split(/\r?\n/);
+
+                    if (startLine > lines.length + 1) {
+                      return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：无法在第 ${startLine} 行前插入。当前文件总共只有 ${lines.length} 行，若想追加到文件末尾，请设置 startLine 为 ${lines.length + 1}。`)+"}]}";
+                    }
+
+                    lines.splice(startLine - 1, 0, ...insertLines);
+
+                    const updatedContent = lines.join(lineEnding);
+                    const buf = new TextEncoder().encode(updatedContent);
+                    pyodide.FS.writeFile(file_path, new Uint8Array(buf));
+
+                    const retcontent = "Edited the file "+file_path+ " success with "+JSON.stringify(replaceStr);
+                    const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}"
+                    return data;
+                } catch (e) {
+                    const retcontent = "Error editing file " + file_path + " in Pyodide FS: ";
+                    const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+                    return data;
+                }
+            }
+            const retcontent = "Error editing file " + file_path + " in Pyodide FS: ";
+            const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+            return data;
+        }
+
+        async function delete_content(params){
+            const file_path = params["file_path"];
+            const startLine = params["start_line"];
+            const endLine = params["end_line"];
+
+            if (!Number.isInteger(startLine) || startLine < 1) {
+                return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' 必须是大于等于 1 的整数。`)+"}]}";
+            }
+            if (!Number.isInteger(endLine) || endLine < 1) {
+              return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'endLine' 必须是大于等于 1 的整数。`)+"}]}";
+            }
+            if (startLine > endLine) {
+              return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' (${startLine}) 不能大于 'endLine' (${endLine})。`)+"}]}";
+            }
+
+            if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
+                // Python mode: read→delete→write via Pyodide FS
+                try {
+                    const binaryContent = pyodide.FS.readFile(file_path, { encoding: 'binary' });
+                    const originalContent = new TextDecoder().decode(binaryContent);
+                    const hasCRLF = originalContent.includes('\r\n');
+                    const lineEnding = hasCRLF ? '\r\n' : '\n';
+                    const lines = originalContent.split(/\r?\n/);
+
+                    if (startLine > lines.length || endLine > lines.length) {
+                        return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：行号范围 [${startLine}, ${endLine}] 越界。当前文件总共只有 ${lines.length} 行。`)+"}]}";
+                    }
+
+                    const deleteCount = endLine - startLine + 1;
+                    lines.splice(startLine - 1, deleteCount);
+
+                    const updatedContent = lines.join(lineEnding);
+                    const buf = new TextEncoder().encode(updatedContent);
+                    pyodide.FS.writeFile(file_path, new Uint8Array(buf));
+
+                    const retcontent = "Deleted content from line "+startLine+" to line "+endLine+" in file "+file_path+" success.";
+                    const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}"
+                    return data;
+                } catch (e) {
+                    const retcontent = "Error deleting content in file " + file_path + " from Pyodide FS: ";
+                    const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+                    return data;
+                }
+            }
+            const retcontent = "Error deleting content in file " + file_path + " from Pyodide FS: ";
+            const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
+            return data;
+        }
+
+        async function search_content(params){
+            const query = params["pattern"];
+            const is_regex = params["is_regex"] || false;
+            const dir_path = params["path"] || null;
+            const summary_only = params["summary_only"] || false;
+
+            const BYTE_BUDGET = 150 * 1024;
+            const BUDGET_THRESHOLD = BYTE_BUDGET * 0.8;
+            const outputLines = [];
+            let currentResultBytes = 0;
+            let budgetSpent = false;
+
+            if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
+                // Python mode: walk Pyodide FS and search each file
+                function pyodideWalkFS(dir) {
+                    const FS = pyodide.FS;
+                    try {
+                        const stat = FS.stat(dir);
+                        // 如果是文件，直接返回该路径
+                        if (FS.isFile(stat.mode)) {
+                            return [dir];
+                        }
+                        // 否则视为目录，进行遍历
+                        const entries = FS.readdir(dir);
+                        const results = [];
+                        for (const entry of entries) {
+                            if (entry === '.' || entry === '..') continue;
+                            const full = dir === '/' ? '/' + entry : dir + '/' + entry;
+                            try {
+                                const subStat = FS.stat(full);
+                                if (FS.isDir(subStat.mode)) {
+                                    results.push(...pyodideWalkFS(full));
+                                } else {
+                                    results.push(full);
+                                }
+                            } catch (_) {
+                                // 忽略无法访问的条目
+                            }
+                        }
+                        return results;
+                    } catch (e) {
+                        // 路径不存在或无法访问，返回空数组（或根据需求抛出错误）
+                        return [];
+                    }
+                }
+
+                const startDir = dir_path || '/home/pyodide';
+                const allFiles = pyodideWalkFS(startDir);
+
+                for (const filePath of allFiles) {
+                    try {
+                        const binaryContent = pyodide.FS.readFile(filePath, { encoding: 'binary' });
+                        const content = new TextDecoder().decode(binaryContent);
+
+                        if (content.includes('\u0000')) continue;
+                        var args = "--line-number -e '"+JSON.stringify(query)+"'";
+                        const matchoutput = fn_gnu_grep(content, args);
+
+                        if(matchoutput)
+                            outputLines.push(matchoutput);
+                    } catch(_) {}
+                }
+
+                if (outputLines.length === 0) {
+                    const noResult = 'No matches found for query: "' + query + '"';
+                    return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(noResult)+"}]}";
+                }
+
+                const resultContent = outputLines.join('\n');
+                return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(resultContent)+"}]}";
+            }
+            const noResult = 'No matches found for query: "' + query + '"';
+            return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(noResult)+"}]}";
+        }
 		
-		function countLines(s) {
-			// 处理 null、undefined 或空字符串
-			if (s == null || s === '') {
-				return 0;
+		
+		async function run_subagent(params){
+			const subagentStore = window.__subagentStore;
+			const settingStore = window.__settingStore; // 确保已在全局暴露
+			if (!subagentStore) {
+				return JSON.stringify({ success: false, content: [{ type: 'text', text: 'Subagent store not available.' }] });
 			}
-			// 统计换行符（\n 或 \r\n）的个数，行数 = 换行符数 + 1
-			const matches = s.match(/\r?\n/g);
-			return (matches ? matches.length : 0) + 1;
-		}
-		
-		async function run_python(params){
-		
-			const code = params["code"];
-
-			const result = await pyodide.runPython(`
-			import io
-			import contextlib
-			import traceback
-
-			_stdout = io.StringIO()
-			_stderr = io.StringIO()
-
-			try:
-				with contextlib.redirect_stdout(_stdout), contextlib.redirect_stderr(_stderr):
-					exec(${JSON.stringify(code)})
-			except Exception:
-				traceback.print_exc(file=_stderr)
-
-			(_stdout.getvalue(), _stderr.getvalue())
-			`);
-
-			const stdout = result[0];
-			const stderr = result[1];
-
-			const content = "the python run result:" + (stdout || stderr);
-			
-			const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(content) + "}]}";
-			return data;
-		}
-		
-		async function read_file(params){
-				const file_path = params["file_path"];
-				const start_line = params["start_line"];
-				const end_line = params["end_line"];
-
-				if (file_path === '.' || file_path === '/' || file_path === 'home/' || file_path === '/home' || file_path === 'home'|| file_path === '/home/pyodide/') {
-					return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`当前目录是 /home/pyodide/`) + "}]}";
+			try {
+				const result = await subagentStore.runTask(params.task, params.context || '');
+				// 任务完成后关闭对话框
+				if (settingStore && settingStore.subagentDialog) {
+					settingStore.subagentDialog = false;
 				}
-
-				if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
-					// Python mode: read from Pyodide FS
-					try {
-						const binaryContent = pyodide.FS.readFile(file_path, { encoding: 'binary' });
-
-						// 检测二进制文件（docx/png/jpg/pdf 等）
-						const isZipOffice = binaryContent.length >= 4 &&
-							binaryContent[0] === 0x50 && binaryContent[1] === 0x4B &&
-							(binaryContent[2] === 0x03 || binaryContent[2] === 0x07);
-						const isOtherBinary = binaryContent.length > 0 && (
-							(binaryContent[0] === 0x89 && binaryContent[1] === 0x50 && binaryContent[2] === 0x4E && binaryContent[3] === 0x47) || // PNG
-							(binaryContent[0] === 0xFF && binaryContent[1] === 0xD8) // JPEG
-						);
-						// PDF（%PDF 魔数）: 用 @iyulab/anydoc 解析为 Markdown
-						const isPdf = binaryContent.length >= 4 &&
-							binaryContent[0] === 0x25 && binaryContent[1] === 0x50 &&
-							binaryContent[2] === 0x44 && binaryContent[3] === 0x46;
-						// 旧版 Office 二进制格式（xls/doc/ppt/xlsb 等，OLE2/CFB 容器）
-						const isOleOffice = binaryContent.length >= 8 &&
-							binaryContent[0] === 0xD0 && binaryContent[1] === 0xCF &&
-							binaryContent[2] === 0x11 && binaryContent[3] === 0xE0 &&
-							binaryContent[4] === 0xA1 && binaryContent[5] === 0xB1 &&
-							binaryContent[6] === 0x1A && binaryContent[7] === 0xE1;
-
-						// 文档（docx/xlsx/pptx/xls/pdf 等）: 用 @iyulab/anydoc 解析为 Markdown
-						if ((isZipOffice || isOleOffice || isPdf) && typeof window.__undocParse === 'function') {
-							try {
-								const result = window.__undocParse(binaryContent);
-								const format = result.format();   // "docx" | "xlsx" | "pptx"
-								let output = result.toMarkdown();
-								if (!output || output.trim() === '') {
-									output = result.toText();  // fallback to plain text
-								}
-								// 带文件头信息
-								const header = `[${format.toUpperCase()}] ${file_path}\n${'='.repeat(40)}\n`;
-								const finalContent = header + output;
-								const lines = finalContent.split(/\r?\n/);
-								const totalLines = lines.length;
-								const start = start_line ?? 1;
-								const end = end_line ?? totalLines;
-								if (start < 1) {
-									return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`错误：'start_line' 必须是大于等于 1 的整数。`) + "}]}";
-								}
-								if (start > totalLines && totalLines > 0) {
-									return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`Error: 'start_line' (${start}) exceeds total file lines (${totalLines}).`) + "}]}";
-								}
-								if (end < start) {
-									return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`Error: 'end_line' (${end}) cannot be less than 'start_line' (${start}).`) + "}]}";
-								}
-								const cappedEnd = Math.min(end, totalLines);
-								const slicedLines = lines.slice(start - 1, cappedEnd);
-								const numberedLines = slicedLines.map((line, index) => {
-									const lineNumber = start + index;
-									return `${lineNumber}:${line}`;
-								});
-								const hasCRLF = finalContent.includes('\r\n');
-								const lineEnding = hasCRLF ? '\r\n' : '\n';
-								const finalContentWithLines = numberedLines.join(lineEnding);
-								return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(JSON.stringify(finalContentWithLines)) + "}]}";
-							} catch (e) {
-								return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`解析 Office 文件失败：${e.message}，请尝试 run_python 方式读取。`) + "}]}";
-							}
-						}
-
-						if (isZipOffice || isOleOffice || isPdf || isOtherBinary) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`错误：'${file_path}' 是二进制文件，不支持以文本方式读取，请尝试 run_python 方式读取。`) + "}]}";
-						}
-
-						const originalContent = new TextDecoder().decode(binaryContent);
-						// 解码后正文含 null 字节 → 二进制文件
-						if (originalContent.includes('\u0000')) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`错误：'${file_path}' 包含非文本数据，不支持以文本方式读取。`) + "}]}";
-						}
-						const lines = originalContent.split(/\r?\n/);
-						const totalLines = lines.length;
-
-						// 参数缺省值处理与越界校验
-						const start = start_line ?? 1;
-						const end = end_line ?? totalLines;
-
-						if (start < 1) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`错误：'start_line' 必须是大于等于 1 的整数。`) + "}]}";
-						}
-						if (start > totalLines && totalLines > 0) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`Error: 'start_line' (${start}) exceeds total file lines (${totalLines}).`) + "}]}";
-						}
-						if (end < start) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(`Error: 'end_line' (${end}) cannot be less than 'start_line' (${start}).`) + "}]}";
-						}
-
-						// 截取指定行范围（slice 是 0-indexed 且右开区间）
-						const cappedEnd = Math.min(end, totalLines);
-						const slicedLines = lines.slice(start - 1, cappedEnd);
-
-						// ===== 新增：为每行添加行号 =====
-						const numberedLines = slicedLines.map((line, index) => {
-							const lineNumber = start + index;
-							return `${lineNumber}:${line}`;
-						});
-
-						// 自动恢复原文件的换行符类型
-						const hasCRLF = originalContent.includes('\r\n');
-						const lineEnding = hasCRLF ? '\r\n' : '\n';
-						const finalContent = numberedLines.join(lineEnding);
-
-						const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(finalContent) + "}]}";
-						return data;
-					} catch (e) {
-						const retcontent = file_path + " not exists in Pyodide FS. ";
-						const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-						return data;
-					}
-				}
-				
-				const retcontent = file_path + " not exists in Pyodide FS. ";
-				const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-				return data;
-		}
-
-		async function write_file(params){
-			const file_path = params["file_path"];
-			const content = params["content"];
-
-			if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
-				// Python mode: write to Pyodide FS
-				try {
-					// Ensure parent directories exist
-					const parentDir = file_path.substring(0, file_path.lastIndexOf('/'));
-					if (parentDir && parentDir !== '') {
-						try { pyodide.FS.mkdirTree(parentDir); } catch(_) {}
-					}
-					const buf = new TextEncoder().encode(content);
-					pyodide.FS.writeFile(file_path, new Uint8Array(buf));
-					const result0 = "Written file " + file_path + " (" + countLines(content) + " lines) success.";
-					const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(result0) + "}]}";
-					return data;
-				} catch (e) {
-					const retcontent = "Error writing file " + file_path + " in Pyodide FS: ";
-					const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-					return data;
-				}
+				return JSON.stringify({
+					success: true,
+					content: [{ type: 'text', text: `Subagent result: ${result}` }]
+				});
+			} catch (error) {
+				return JSON.stringify({
+					success: false,
+					content: [{ type: 'text', text: `Subagent error: ${error.message}` }]
+				});
 			}
-			const retcontent = "Error writing file " + file_path + " in Pyodide FS: ";
-			const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-			return data;
 		}
-		
-		async function replace_content(params){
-				const file_path = params["file_path"];
-				const replaceStr = params["replace_content"];
-				const startLine = params["start_line"];
-				const endLine = params["end_line"];
 
-				if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
-					// Python mode: read→modify→write via Pyodide FS
-					try {
-						const binaryContent = pyodide.FS.readFile(file_path, { encoding: 'binary' });
-						const originalContent = new TextDecoder().decode(binaryContent);
-						const hasCRLF = originalContent.includes('\r\n');
-						const lineEnding = hasCRLF ? '\r\n' : '\n';
-						const lines = originalContent.split(/\r?\n/);
+        async function delete_file(params){
+            const file_path = params["file_path"];
+            const file_type = params["file_type"];
 
-						if (!Number.isInteger(endLine) || endLine < 0) {
-						  return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'endLine' 必须是大于等于 0 的整数。`)+"}]}";
-						}
-						if (!Number.isInteger(startLine) || startLine < 1) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' 必须是大于等于 1 的整数。`)+"}]}";
-						}
+            if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && typeof pyodide !== 'undefined' && pyodide) {
+                // Python mode: use Pyodide FS
+                const FS = pyodide.FS;
+                function deleteRecursive(dirPath) {
+                    try {
+                        const items = FS.readdir(dirPath);
+                        for (const item of items) {
+                            if (item === '.' || item === '..') continue;
+                            const full = dirPath.endsWith('/') ? dirPath + item : dirPath + '/' + item;
+                            const stat = FS.stat(full);
+                            if (FS.isDir(stat.mode)) {
+                                deleteRecursive(full);
+                            } else {
+                                FS.unlink(full);
+                            }
+                        }
+                        FS.rmdir(dirPath);
+                    } catch (e) {
+                        // If rmdir fails (non-empty), recursively clean then retry
+                        try {
+                            const items = FS.readdir(dirPath);
+                            for (const item of items) {
+                                if (item === '.' || item === '..') continue;
+                                const full = dirPath.endsWith('/') ? dirPath + item : dirPath + '/' + item;
+                                try { FS.unlink(full); } catch (_) { deleteRecursive(full); }
+                            }
+                            FS.rmdir(dirPath);
+                        } catch (_) {}
+                    }
+                }
+                try {
+                    if (file_type === 'folder') {
+                        deleteRecursive(file_path);
+                    } else {
+                        FS.unlink(file_path);
+                    }
+                    const retcontent = "Deleted " + file_path + " successfully.";
+                    return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}";
+                } catch (e) {
+                    const retcontent = "Error deleting " + file_path + ": ";
+                    return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}";
+                }
+            }
+            const retcontent = "Error deleting " + file_path + ": ";
+            return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}";
+        }
 
-						const insertLines = replaceStr === '' ? [] : replaceStr.split(/\r?\n/);
-
-						if (startLine > endLine) {
-						  return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' (${startLine}) 不能大于 'endLine' (${endLine})。`)+"}]}";
-						}
-						if (startLine > lines.length || endLine > lines.length) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：行号范围 [${startLine}, ${endLine}] 越界。当前文件总共只有 ${lines.length} 行。`)+"}]}";
-						}
-
-						const deleteCount = endLine - startLine + 1;
-						lines.splice(startLine - 1, deleteCount, ...insertLines);
-
-						const updatedContent = lines.join(lineEnding);
-						const buf = new TextEncoder().encode(updatedContent);
-						pyodide.FS.writeFile(file_path, new Uint8Array(buf));
-
-						if(replaceStr === ''){
-							const retcontent = "Edited the file "+file_path+ " success with remove text from line "+startLine+" to line "+endLine;
-							const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}"
-							return data;
-						} else {
-							const retcontent = "Edited the file "+file_path+ " success with "+JSON.stringify(replaceStr);
-							const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}"
-							return data;
-						}
-					} catch (e) {
-						const retcontent = "Error editing file " + file_path + " in Pyodide FS: ";
-						const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-						return data;
-					}
-				}
-				const retcontent = "Error editing file " + file_path + " in Pyodide FS: ";
-				const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-				return data;
-		}
-		
-		async function add_content(params){
-				const file_path = params["file_path"];
-				const replaceStr = params["add_content"];
-				const startLine = params["line_number"];
-
-				if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
-					// Python mode: read→insert→write via Pyodide FS
-					try {
-						const binaryContent = pyodide.FS.readFile(file_path, { encoding: 'binary' });
-						const originalContent = new TextDecoder().decode(binaryContent);
-						const hasCRLF = originalContent.includes('\r\n');
-						const lineEnding = hasCRLF ? '\r\n' : '\n';
-						const lines = originalContent.split(/\r?\n/);
-
-						if (!Number.isInteger(startLine) || startLine < 1) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' 必须是大于等于 1 的整数。`)+"}]}";
-						}
-
-						const insertLines = replaceStr === '' ? [] : replaceStr.split(/\r?\n/);
-
-						if (startLine > lines.length + 1) {
-						  return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：无法在第 ${startLine} 行前插入。当前文件总共只有 ${lines.length} 行，若想追加到文件末尾，请设置 startLine 为 ${lines.length + 1}。`)+"}]}";
-						}
-
-						lines.splice(startLine - 1, 0, ...insertLines);
-
-						const updatedContent = lines.join(lineEnding);
-						const buf = new TextEncoder().encode(updatedContent);
-						pyodide.FS.writeFile(file_path, new Uint8Array(buf));
-
-						const retcontent = "Edited the file "+file_path+ " success with "+JSON.stringify(replaceStr);
-						const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}"
-						return data;
-					} catch (e) {
-						const retcontent = "Error editing file " + file_path + " in Pyodide FS: ";
-						const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-						return data;
-					}
-				}
-				const retcontent = "Error editing file " + file_path + " in Pyodide FS: ";
-				const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-				return data;
-		}
-		
-		async function delete_content(params){
-				const file_path = params["file_path"];
-				const startLine = params["start_line"];
-				const endLine = params["end_line"];
-
-				if (!Number.isInteger(startLine) || startLine < 1) {
-					return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' 必须是大于等于 1 的整数。`)+"}]}";
-				}
-				if (!Number.isInteger(endLine) || endLine < 1) {
-				  return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'endLine' 必须是大于等于 1 的整数。`)+"}]}";
-				}
-				if (startLine > endLine) {
-				  return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：'startLine' (${startLine}) 不能大于 'endLine' (${endLine})。`)+"}]}";
-				}
-
-				if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
-					// Python mode: read→delete→write via Pyodide FS
-					try {
-						const binaryContent = pyodide.FS.readFile(file_path, { encoding: 'binary' });
-						const originalContent = new TextDecoder().decode(binaryContent);
-						const hasCRLF = originalContent.includes('\r\n');
-						const lineEnding = hasCRLF ? '\r\n' : '\n';
-						const lines = originalContent.split(/\r?\n/);
-
-						if (startLine > lines.length || endLine > lines.length) {
-							return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(`错误：行号范围 [${startLine}, ${endLine}] 越界。当前文件总共只有 ${lines.length} 行。`)+"}]}";
-						}
-
-						const deleteCount = endLine - startLine + 1;
-						lines.splice(startLine - 1, deleteCount);
-
-						const updatedContent = lines.join(lineEnding);
-						const buf = new TextEncoder().encode(updatedContent);
-						pyodide.FS.writeFile(file_path, new Uint8Array(buf));
-
-						const retcontent = "Deleted content from line "+startLine+" to line "+endLine+" in file "+file_path+" success.";
-						const data = "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}"
-						return data;
-					} catch (e) {
-						const retcontent = "Error deleting content in file " + file_path + " from Pyodide FS: ";
-						const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-						return data;
-					}
-				}
-				const retcontent = "Error deleting content in file " + file_path + " from Pyodide FS: ";
-				const data = "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":" + JSON.stringify(retcontent) + "}]}";
-				return data;
-		}
-		
-		async function search_content(params){
-				const query = params["pattern"];
-				const is_regex = params["is_regex"] || false;
-				const dir_path = params["path"] || null;
-				const summary_only = params["summary_only"] || false;
-
-				// 构建正则表达式
-				/*let searchRegex;
-				try {
-					if (is_regex) {
-						searchRegex = new RegExp(query, 'g');
-					} else {
-						const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-						searchRegex = new RegExp(escapedQuery, 'g');
-					}
-				} catch (e) {
-					return "{\"success\":false,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify("Invalid regex: " + e.message)+"}]}";
-				}*/
-
-				const BYTE_BUDGET = 150 * 1024;
-				const BUDGET_THRESHOLD = BYTE_BUDGET * 0.8;
-				const outputLines = [];
-				let currentResultBytes = 0;
-				let budgetSpent = false;
-
-				if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && pyodide) {
-					// Python mode: walk Pyodide FS and search each file
-					function pyodideWalkFS(dir) {
-						const FS = pyodide.FS;
-						try {
-							const stat = FS.stat(dir);
-							// 如果是文件，直接返回该路径
-							if (FS.isFile(stat.mode)) {
-								return [dir];
-							}
-							// 否则视为目录，进行遍历
-							const entries = FS.readdir(dir);
-							const results = [];
-							for (const entry of entries) {
-								if (entry === '.' || entry === '..') continue;
-								const full = dir === '/' ? '/' + entry : dir + '/' + entry;
-								try {
-									const subStat = FS.stat(full);
-									if (FS.isDir(subStat.mode)) {
-										results.push(...pyodideWalkFS(full));
-									} else {
-										results.push(full);
-									}
-								} catch (_) {
-									// 忽略无法访问的条目
-								}
-							}
-							return results;
-						} catch (e) {
-							// 路径不存在或无法访问，返回空数组（或根据需求抛出错误）
-							return [];
-						}
-					}
-
-					const startDir = dir_path || '/home/pyodide';
-					const allFiles = pyodideWalkFS(startDir);
-
-					for (const filePath of allFiles) {
-						try {
-							const binaryContent = pyodide.FS.readFile(filePath, { encoding: 'binary' });
-							const content = new TextDecoder().decode(binaryContent);
-
-							if (content.includes('\u0000')) continue;
-							var args = "--line-number -e '"+JSON.stringify(query)+"'";
-							const matchoutput = fn_gnu_grep(content, args);
-							
-							if(matchoutput)
-								outputLines.push(matchoutput);
-							
-/*
-							const lines = content.split(/\r?\n/);
-							let fileMatchCount = 0;
-							const fileMatches = [];
-
-							for (let i = 0; i < lines.length; i++) {
-								searchRegex.lastIndex = 0;
-								if (searchRegex.test(lines[i])) {
-									fileMatchCount++;
-									if (fileMatchCount <= 30) {
-										fileMatches.push(filePath + ':' + (i + 1) + ': ' + lines[i].trim());
-									}
-								}
-							}
-
-							if (fileMatchCount === 0) continue;
-
-							if (summary_only || budgetSpent) {
-								const summaryLine = filePath + ': ' + fileMatchCount + ' matches';
-								outputLines.push(summaryLine);
-								currentResultBytes += new TextEncoder().encode(summaryLine + '\n').length;
-							} else {
-								for (const matchLine of fileMatches) {
-									outputLines.push(matchLine);
-									currentResultBytes += new TextEncoder().encode(matchLine + '\n').length;
-								}
-								if (fileMatchCount > 30) {
-									const capLine = filePath + ': ... and ' + (fileMatchCount - 30) + ' more matches (capped at 30)';
-									outputLines.push(capLine);
-									currentResultBytes += new TextEncoder().encode(capLine + '\n').length;
-								}
-								if (currentResultBytes > BUDGET_THRESHOLD) {
-									budgetSpent = true;
-								}
-							}
-							*/
-						} catch(_) {}
-					}
-
-					if (outputLines.length === 0) {
-						const noResult = 'No matches found for query: "' + query + '"';
-						return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(noResult)+"}]}";
-					}
-
-					const resultContent = outputLines.join('\n');
-					return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(resultContent)+"}]}";
-				}
-				const noResult = 'No matches found for query: "' + query + '"';
-				return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(noResult)+"}]}";
-		
-		}
-		
-		async function delete_file(params){
-				const file_path = params["file_path"];
-				const file_type = params["file_type"];
-				
-				if (typeof pgpyMode !== 'undefined' && pgpyMode === 'python' && typeof pyodide !== 'undefined' && pyodide) {
-					// Python mode: use Pyodide FS
-					const FS = pyodide.FS;
-					function deleteRecursive(dirPath) {
-						try {
-							const items = FS.readdir(dirPath);
-							for (const item of items) {
-								if (item === '.' || item === '..') continue;
-								const full = dirPath.endsWith('/') ? dirPath + item : dirPath + '/' + item;
-								const stat = FS.stat(full);
-								if (FS.isDir(stat.mode)) {
-									deleteRecursive(full);
-								} else {
-									FS.unlink(full);
-								}
-							}
-							FS.rmdir(dirPath);
-						} catch (e) {
-							// If rmdir fails (non-empty), recursively clean then retry
-							try {
-								const items = FS.readdir(dirPath);
-								for (const item of items) {
-									if (item === '.' || item === '..') continue;
-									const full = dirPath.endsWith('/') ? dirPath + item : dirPath + '/' + item;
-									try { FS.unlink(full); } catch (_) { deleteRecursive(full); }
-								}
-								FS.rmdir(dirPath);
-							} catch (_) {}
-						}
-					}
-					try {
-						if (file_type === 'folder') {
-							deleteRecursive(file_path);
-						} else {
-							FS.unlink(file_path);
-						}
-						const retcontent = "Deleted " + file_path + " successfully.";
-						return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}";
-					} catch (e) {
-						const retcontent = "Error deleting " + file_path + ": ";
-						return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}";
-					}
-				}
-				const retcontent = "Error deleting " + file_path + ": ";
-				return "{\"success\":true,\"content\":[{\"type\":\"text\",\"text\":"+JSON.stringify(retcontent)+"}]}";
-		}
-		
         const useMcpStore = defineStore("mcpStore", {
             state: () => ({
                 serverTools: [],
@@ -1979,227 +2218,221 @@
 
             getters: {
                 getServers: () => {
-					window.mcpServers = {
-							'filesystem-service': {
-								tools: {
-								  list: async () => ({
-									tools: [
+                    window.mcpServers = {
+                            'filesystem-service': {
+                                tools: {
+                                  list: async () => ({
+                                    tools: [
+                                      {
+                                        name: 'read_file',
+                                            description: 'Read the contents of a file. Supports text, images, PDFs, and Jupyter notebooks.',
+                                            inputSchema: {
+                                            type: 'object',
+                                            properties: {
+                                            file_path: {
+                                            type: 'string',
+                                            description: 'The path of the file to read'
+                                            },
+                                            start_line: {
+                                            type: 'integer',
+                                            description: 'Starting line number (1-indexed, optional)'
+                                            },
+                                            end_line: {
+                                            type: 'integer',
+                                            description: 'Ending line number (1-indexed, inclusive, optional)'
+                                            }
+                                            },
+                                            required: ['file_path']
+                                            }
+                                      },
+                                      {
+                                        name: 'write_file',
+                                        description: 'Write content to a file. Creates parent directories as needed.',
+                                        inputSchema: {
+                                        type: 'object',
+                                        properties: {
+                                        file_path: {
+                                        type: 'string',
+                                        description: 'The path of the file to write'
+                                        },
+                                        content: {
+                                        type: 'string',
+                                        description: 'The content to write to the file'
+                                        }
+                                        },
+                                        required: ['file_path', 'content']
+                                        }
+                                      },
+                                      {
+                                        name: 'delete_file',
+                                            description: 'Delete a file or directory. If it is a directory, all files under that path prefix will also be deleted.',
+                                            inputSchema: {
+                                            type: 'object',
+                                            properties: {
+                                            file_path: {
+                                            type: 'string',
+                                            description: 'The path of the file or directory to delete'
+                                            },
+                                            file_type: {
+                                            type: 'string',
+                                            description: 'The type of the file or directory to delete,if object is file,then file_type=file else if object is directory then file_type=folder.'
+                                            }
+                                            },
+                                            required: ['file_path','file_type']
+                                            }
+                                      },
+                                      {
+                                        name: 'add_content',
+                                        description: 'add file content by line number. insert before specified line. Call `read_file` on this path first this session.',
+                                        inputSchema: {
+                                        type: 'object',
+                                        properties: {
+                                        file_path: {
+                                        type: 'string',
+                                        description: 'The path of the file to edit'
+                                        },
+                                        line_number: {
+                                        type: 'number',
+                                        description: 'Starting line number (1-indexed). This line is used as the starting point for insertion.'
+                                        },
+                                        add_content: {
+                                        type: 'string',
+                                        description: 'The new text content to be inserted .'
+                                        }
+                                        },
+                                        required: ['file_path','line_number', 'add_content']
+                                        }
+                                      },
+                                      {
+                                        name: 'delete_content',
+                                        description: 'Delete file content by line number range (start_line to end_line, inclusive). Call `read_file` on this path first this session.',
+                                        inputSchema: {
+                                        type: 'object',
+                                        properties: {
+                                        file_path: {
+                                        type: 'string',
+                                        description: 'The path of the file to edit'
+                                        },
+                                        start_line: {
+                                        type: 'number',
+                                        description: 'Starting line number (1-indexed). This line is deleted along with all lines up to end_line.'
+                                        },
+                                        end_line: {
+                                        type: 'number',
+                                        description: 'Ending line number (1-indexed, inclusive). All lines from start_line to end_line will be deleted.'
+                                        }
+                                        },
+                                        required: ['file_path','start_line','end_line']
+                                        }
+                                      },
+                                      {
+                                        name: 'replace_content',
+                                        description: 'replace file content by line number range. Supports two modes: "range replacement".Call `read_file` on this path first this session.',
+                                        inputSchema: {
+                                        type: 'object',
+                                        properties: {
+                                        file_path: {
+                                        type: 'string',
+                                        description: 'The path of the file to edit'
+                                        },
+                                        start_line: {
+                                        type: 'number',
+                                        description: 'Starting line number (1-indexed). This line is used as the starting point for both replacement and insertion.'
+                                        },
+                                        end_line: {
+                                        type: 'number',
+                                        description: 'Ending line number (1-indexed).\n- If greater than 0: replaces all content from start_line to end_line (inclusive).'
+                                        },
+                                        replace_content: {
+                                        type: 'string',
+                                        description: 'The new text content used as replacement (may contain multiple lines).'
+                                        }
+                                        },
+                                        required: ['file_path','start_line','end_line', 'replace_content']
+                                        }
+                                      },
+                                      {
+                                        name: 'search_content',
+                                        description: 'Search file contents using regex patterns.',
+                                        inputSchema: {
+                                        type: 'object',
+                                        properties: {
+                                        pattern: {
+                                        type: 'string',
+                                        description: 'The regex pattern to search for'
+                                        },
+                                        path: {
+                                        type: 'string',
+                                        description: 'Optional directory path filter. The path where to search for. Default: /home/pyodide.'
+                                        }
+                                        },
+                                        required: ['pattern','path']
+                                        }
+                                      },
+                                      {
+                                        name: 'run_python',
+                                            description: 'Run Python code in a local Pyodide sandbox.',
+                                            inputSchema: {
+                                            type: 'object',
+                                            properties: {
+                                            code: {
+                                            type: 'string',
+                                            description: 'Python code to run'
+                                            }
+                                            },
+                                            required: ['code']
+                                            }
+                                      },
 									  {
-										name: 'read_file',
-											description: 'Read the contents of a file. Supports text, images, PDFs, and Jupyter notebooks.',
+											name: 'run_subagent',
+											description: 'Launch a subagent dialog to handle a subtask. The subagent will have its own conversation session but shares the same tool set.',
 											inputSchema: {
-											type: 'object',
-											properties: {
-											file_path: {
-											type: 'string',
-											description: 'The path of the file to read'
-											},
-											start_line: {
-											type: 'integer',
-											description: 'Starting line number (1-indexed, optional)'
-											},
-											end_line: {
-											type: 'integer',
-											description: 'Ending line number (1-indexed, inclusive, optional)'
+												type: 'object',
+												properties: {
+													task: {
+														type: 'string',
+														description: 'The task description to be handled by the subagent.'
+													},
+													context: {
+														type: 'string',
+														description: 'Optional additional context or background information for the subagent.'
+													}
+												},
+												required: ['task']
 											}
-											},
-											required: ['file_path']
-											}
-									  },
-									  {
-										name: 'write_file',
-										description: 'Write content to a file. Creates parent directories as needed.',
-										inputSchema: {
-										type: 'object',
-										properties: {
-										file_path: {
-										type: 'string',
-										description: 'The path of the file to write'
-										},
-										content: {
-										type: 'string',
-										description: 'The content to write to the file'
 										}
-										},
-										required: ['file_path', 'content']
+                                    ]
+                                  }),
+                                  call: async (name,params) => {
+                                      try {
+                                        if (name == "run_python") {
+                                            return run_python(params);
+                                        } else if (name == "read_file") {
+                                            return read_file(params);
+                                        } else if(name=="write_file"){
+                                            return write_file(params);
+                                        } else if(name=="replace_content"){
+                                            return replace_content(params);
+                                        } else if(name=="add_content"){
+                                            return add_content(params);
+                                        } else if(name=="delete_content"){
+                                            return delete_content(params);
+                                        } else if(name=="search_content"){
+                                            return search_content(params);
+                                        } else if(name=="delete_file"){
+                                            return delete_file(params);
+                                        } else if (name == "run_subagent") {
+											return run_subagent(params);
 										}
-									  },
-									  {
-										name: 'delete_file',
-											description: 'Delete a file or directory. If it is a directory, all files under that path prefix will also be deleted.',
-											inputSchema: {
-											type: 'object',
-											properties: {
-											file_path: {
-											type: 'string',
-											description: 'The path of the file or directory to delete'
-											},
-											file_type: {
-											type: 'string',
-											description: 'The type of the file or directory to delete,if object is file,then file_type=file else if object is directory then file_type=folder.'
-											}
-											},
-											required: ['file_path','file_type']
-											}
-									  },
-									  {
-										name: 'add_content',
-										description: 'add file content by line number. insert before specified line. Call `read_file` on this path first this session.',
-										inputSchema: {
-										type: 'object',
-										properties: {
-										file_path: {
-										type: 'string',
-										description: 'The path of the file to edit'
-										},
-										line_number: {
-										type: 'number',
-										description: 'Starting line number (1-indexed). This line is used as the starting point for insertion.'
-										},
-										add_content: {
-										type: 'string',
-										description: 'The new text content to be inserted .'
-										}
-										},
-										required: ['file_path','line_number', 'add_content']
-										}
-									  },
-									  {
-										name: 'delete_content',
-										description: 'Delete file content by line number range (start_line to end_line, inclusive). Call `read_file` on this path first this session.',
-										inputSchema: {
-										type: 'object',
-										properties: {
-										file_path: {
-										type: 'string',
-										description: 'The path of the file to edit'
-										},
-										start_line: {
-										type: 'number',
-										description: 'Starting line number (1-indexed). This line is deleted along with all lines up to end_line.'
-										},
-										end_line: {
-										type: 'number',
-										description: 'Ending line number (1-indexed, inclusive). All lines from start_line to end_line will be deleted.'
-										}
-										},
-										required: ['file_path','start_line','end_line']
-										}
-									  },
-									  {
-										name: 'replace_content',
-										description: 'replace file content by line number range. Supports two modes: "range replacement".Call `read_file` on this path first this session.',
-										inputSchema: {
-										type: 'object',
-										properties: {
-										file_path: {
-										type: 'string',
-										description: 'The path of the file to edit'
-										},
-										start_line: {
-										type: 'number',
-										description: 'Starting line number (1-indexed). This line is used as the starting point for both replacement and insertion.'
-										},
-										end_line: {
-										type: 'number',
-										description: 'Ending line number (1-indexed).\n- If greater than 0: replaces all content from start_line to end_line (inclusive).'
-										},
-										replace_content: {
-										type: 'string',
-										description: 'The new text content used as replacement (may contain multiple lines).'
-										}
-										},
-										required: ['file_path','start_line','end_line', 'replace_content']
-										}
-									  },									  
-									  {
-										name: 'search_content',
-										description: 'Search file contents using regex patterns.',
-										inputSchema: {
-										type: 'object',
-										properties: {
-										pattern: {
-										type: 'string',
-										description: 'The regex pattern to search for'
-										},
-										path: {
-										type: 'string',
-										description: 'Optional directory path filter. The path where to search for. Default: /home/pyodide.'
-										}
-										},
-										required: ['pattern','path']
-										}
-									  },
-									  {
-										name: 'run_python',
-											description: 'Run Python code in a local Pyodide sandbox.',
-											inputSchema: {
-											type: 'object',
-											properties: {
-											code: {
-											type: 'string',
-											description: 'Python code to run'
-											}
-											},
-											required: ['code']
-											}
-									  }
-									]
-								  }),
-								  call: async (name,params) => {
-									  try {
-										/*const response = await fetch('http://127.0.0.1:9077/mcpserver', {
-										  method: 'POST',
-										  headers: {
-											'Content-Type': 'application/json',
-										  },
-										  body: JSON.stringify(params),
-										});
-
-										if (!response.ok) {
-										  // 处理 HTTP 错误（如 404, 500）
-										  throw new Error(`HTTP error! status: ${response.status}`);
-										}
-
-										const data = await response.text();
-
-										// 检查 JSON‑RPC 响应是否包含错误
-										if (data.error) {
-										  // 如果服务器返回了 JSON‑RPC 错误对象，抛出或处理
-										  throw new Error(`JSON‑RPC error: ${data.error.message} (code ${data.error.code})`);
-										}
-										*/
-										// MCP 标准响应格式为 { result: { content: [...], isError?: boolean } }
-										// 但有些实现可能直接返回 result 内容，我们统一返回整个 data.result
-										
-										if (name == "run_python") {
-											return run_python(params);
-										} else if (name == "read_file") {
-											return read_file(params);
-										} else if(name=="write_file"){
-											return write_file(params);
-										} else if(name=="replace_content"){
-											return replace_content(params);
-										} else if(name=="add_content"){
-											return add_content(params);
-										} else if(name=="delete_content"){
-											return delete_content(params);
-										} else if(name=="search_content"){
-											return search_content(params);
-										} else if(name=="delete_file"){
-											return delete_file(params);
-										}
-										
-										return "{}"; 
-									  } catch (error) {
-										// 捕获网络错误或上述抛出的错误，并重新抛出让上层处理
-										console.trace('调用工具失败');
-										throw error;
-									  }
-									}
-								}
-							  }
-					};
+                                        return "{}";
+                                      } catch (error) {
+                                        console.trace('调用工具失败');
+                                        throw error;
+                                      }
+                                    }
+                                }
+                              }
+                    };
                     //console.log('MCP:', window.mcpServers)
                     return window.mcpServers
                 },
@@ -2309,11 +2542,6 @@
                         return this.packReturn(`Arguments JSON parse error: '${e}'`)
                     }
 
-                    //const params = {
-                    //    name: tool_name,
-                    //    arguments: tool_arguments
-                    //}
-					//修改这里代码调用java
                     const result = await this.getServers[tool.server].tools.call(tool_name,tool_arguments)
                     return result
                 },
@@ -2427,7 +2655,7 @@
                                     const items = FS.readdir(path);
                                     for (const item of items) {
                                         if (item === '.' || item === '..') continue;
-										if (item === 'default.profraw') continue;
+                                        if (item === 'default.profraw') continue;
                                         const full = path.endsWith('/') ? path + item : path + '/' + item;
                                         try {
                                             const stat = FS.stat(full);
@@ -2536,6 +2764,9 @@
 
                 toolboxShow: false,
                 fontStatus: false,
+
+                // ─── Subagent dialog control ───
+                subagentDialog: false,
             }),
             actions: {
                 initDialog() {
@@ -2682,8 +2913,6 @@
             },
         });
 
-
-
         const useSnackbarStore = defineStore("snackbarStore", {
             state: () => ({
                 isShow: false,
@@ -2727,7 +2956,6 @@
             template: '#tuui-img-dialog-template',
             props: { src: { type: String, required: true } }
         };
-
 
         const TuuiChatCard = defineComponent({
             template: '#tuui-chat-card-template',
@@ -2910,13 +3138,11 @@
                             }
                         },
                         resendMessage() {
-                            // const conversation = this.conversation.reduce((newConversation, item) => {
                             let index = this.conversation.length - 1;
                             while (index >= 0 && this.conversation[index].role !== "user") {
                                 index--;
                             }
 
-                            // when role == "user" is found，drop followings
                             if (index >= 0) {
                                 this.conversation.splice(index + 1);;
                                 this.startInference();
@@ -2924,8 +3150,6 @@
                         },
                         sendMessage() {
                             if (this.userMessage) {
-                                // Add the message to the list
-
                                 const imageBase64 = this.base64;
 
                                 this.conversation.push({
@@ -2948,11 +3172,11 @@
                             const messages = await fetchedPrompt
                             console.log(messages)
                             this.conversation = messages
-
                         },
                         startInference: async function () {
+						
                             this.clear();
-                            await createCompletion(this.conversation);
+                            await createCompletion(this.conversation, this.generating, this);
                             await this.postToolCall()
                         },
                         postToolCall: async function () {
@@ -2980,23 +3204,22 @@
                                             tool_call.function.arguments
                                         );
 
-										 try {
-													  const result = JSON.parse(result0);
-													  console.log(result);
-													  if (result.content) {
-														this.contentConvert(result.content, tool_call.id).forEach(item => {
-															this.conversation.push(item);
-														});
-														tool_called = true;
-													}
+                                         try {
+                                              const result = JSON.parse(result0);
+                                              console.log(result);
+                                              if (result.content) {
+                                                this.contentConvert(result.content, tool_call.id).forEach(item => {
+                                                    this.conversation.push(item);
+                                                });
+                                                tool_called = true;
+                                              }
 
                                         await callNextTool(toolCalls, index + 1);
 
-										  } catch (error) {
-										  console.error("JSON 格式有误，请检查：", error.message);
-										}
-										
-                                        
+                                          } catch (error) {
+                                          console.error("JSON 格式有误，请检查：", error.message);
+                                        }
+
                                     } catch (error) {
                                         const result = mcpStore.packReturn(`Error calling tool: ${error}`)
                                         this.conversation.push({
@@ -3031,7 +3254,7 @@
                             } else {
                                 return [{
                                     role: "tool",
-                                    content: msg.map(item => item.text).join('\n'), // If the LLM can support array in tool, use msg directly
+                                    content: msg.map(item => item.text).join('\n'),
                                     tool_call_id: toolCallId
                                 }]
                             }
@@ -3108,7 +3331,6 @@
                     }
                 });
 
-
                 const useDefaultChoiceStore = defineStore("defaultChoiceStore", {
                     state: () => ({
                         url: [
@@ -3131,7 +3353,6 @@
                     persist: {
                         enabled: true,
                         strategies: [{ storage: localStorage }],
-                        // paths: ["apiKey"] 
                     },
                     actions: {
                         resetState() {
@@ -3144,10 +3365,9 @@
                     },
                 });
 
-
                 const useChatbotStore = defineStore("chatbotStore", {
                     state: () => ({
-                        apiKey: "",
+                        apiKey: "sk-xxx",
                         url: "https://api.deepseek.com",
                         path: "/chat/completions",
                         model: "deepseek-v4-flash",
@@ -3165,7 +3385,6 @@
                     persist: {
                         enabled: true,
                         strategies: [{ storage: localStorage }],
-                        // paths: ["apiKey"] 
                     },
 
                     actions: {
@@ -3181,60 +3400,318 @@
 
                 });
 
+                // ─── Subagent Store ────────────────────────────────────────────
+                // 完全独立于主 messageStore，但复用相同的调用逻辑
+                const useSubagentStore = defineStore("subagentStore", {
+                    state: () => ({
+                        conversation: [],
+                        userMessage: "",
+                        generating: false,
+						    // ---- 新增 ----
+						isRunningTask: false,
+						_taskResolve: null,
+						_taskReject: null,
+						 // ---- 新增 ----
+						taskQueue: [],          // 存放待执行的任务对象 { task, context, resolve, reject }
+						isProcessing: false,    // 是否正在处理队列
+                    }),
+                    persist: {
+                        enabled: true,
+                        strategies: [{ storage: sessionStorage }],
+                    },
+                    actions: {
+                        clearConversation() {
+                            if (this.conversation.length === 0) {
+                                snackbarStore.showWarningMessage('Already empty');
+                            } else {
+                                this.conversation = [];
+                                snackbarStore.showSuccessMessage('Subagent chat cleared');
+                            }
+                        },
+                        stop() {
+                            this.generating = false;
+                            snackbarStore.showInfoMessage('Subagent stopped');
+                        },
+                        clearInput() {
+                            this.userMessage = "";
+                        },
+                        handleKeydown(e) {
+                            if (e.key === "Enter" && e.shiftKey) {
+                                // new line
+                            } else if (e.key === "Enter") {
+                                e.preventDefault();
+                                this.sendMessage();
+                            }
+                        },
+                        sendMessage() {
+							if (this.isRunningTask || this.taskQueue.length > 0) {
+								snackbarStore.showWarningMessage('Subagent is busy with tasks.');
+								return;
+							}
+                            if (this.userMessage) {
+                                this.conversation.push({
+                                    content: this.userMessage,
+                                    role: "user",
+                                });
+                                this.clearInput();
+                                this.startInference();
+                            }
+                        },
+                        startInference: async function () {
+                            await createCompletion(this.conversation, this.generating, this, { excludeTools: ['run_subagent'] });
+                            await this.postToolCall();
+                        },
+                        postToolCall: async function () {
+                            const last = this.conversation.at(-1);
+							if (!last || !last.tool_calls || last.tool_calls.length === 0) {
+								if (this.isRunningTask && !this.generating) {
+									this._onTaskComplete();
+								}
+								return;
+							}
+                            if (!last || !last.tool_calls) return;
+                            if (last.tool_calls.length === 0) {
+                                delete last.tool_calls;
+                                return;
+                            }
+                            let tool_called = false;
+
+                            const callNextTool = async (toolCalls, index) => {
+                                if (index >= toolCalls.length) return;
+                                const tool_call = toolCalls[index];
+                                try {
+                                    const result0 = await mcpStore.callTool(
+                                        tool_call.function.name,
+                                        tool_call.function.arguments
+                                    );
+                                    try {
+                                        const result = JSON.parse(result0);
+                                        if (result.content) {
+                                            this.contentConvert(result.content, tool_call.id).forEach(item => {
+                                                this.conversation.push(item);
+                                            });
+                                            tool_called = true;
+                                        }
+                                        await callNextTool(toolCalls, index + 1);
+                                    } catch (error) {
+                                        console.error("JSON parse error:", error.message);
+                                    }
+                                } catch (error) {
+                                    const result = mcpStore.packReturn(`Error calling tool: ${error}`);
+                                    this.conversation.push({
+                                        role: "tool",
+                                        content: result.content,
+                                        tool_call_id: tool_call.id
+                                    });
+                                    tool_called = true;
+                                }
+                            };
+
+                            await callNextTool(last.tool_calls, 0);
+
+                            if (tool_called) {
+                                this.startInference();
+                            }
+							// 在 if (tool_called) { this.startInference(); } 之后
+							if (!tool_called && this.isRunningTask && !this.generating) {
+								this._onTaskComplete();
+							}
+                        },
+                        contentConvert: function (content, toolCallId) {
+                            const msg = content.map(item => mcpStore.convertItem(item));
+                            if (msg.find(item => item.type === 'image_url')) {
+                                return [{
+                                    role: "tool",
+                                    content: mcpStore.packReturn('Image provided in next user message').content,
+                                    tool_call_id: toolCallId
+                                }, {
+                                    role: "user",
+                                    content: msg,
+                                }];
+                            } else {
+                                return [{
+                                    role: "tool",
+                                    content: msg.map(item => item.text).join('\n'),
+                                    tool_call_id: toolCallId
+                                }];
+                            }
+                        },
+                        exportConversation() {
+                            if (this.conversation.length === 0) {
+                                snackbarStore.showWarningMessage('No messages to export');
+                                return;
+                            }
+                            const blob = new Blob([JSON.stringify(this.conversation, null, 2)], { type: 'application/json' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `subagent-chat-${Date.now()}.json`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                            snackbarStore.showSuccessMessage('Exported subagent chat');
+                        },
+						openAndSend(task, context = '') {
+							// 打开 Subagent 对话框（如果未打开）
+							const settingStore = useSettingStore();
+							if (!settingStore.subagentDialog) {
+								settingStore.subagentDialog = true;
+								// 等待 DOM 更新后发送消息
+								nextTick(() => {
+									this.userMessage = task + (context ? '\n\nContext: ' + context : '');
+									this.sendMessage();
+								});
+							} else {
+								// 已打开则直接发送
+								this.userMessage = task + (context ? '\n\nContext: ' + context : '');
+								this.sendMessage();
+							}
+						},
+						runTask(task, context) {
+							return new Promise((resolve, reject) => {
+								// 将任务加入队列
+								this.taskQueue.push({ task, context, resolve, reject });
+								// 尝试处理队列
+								this.processQueue();
+							});
+						},
+						_onTaskComplete() {
+							if (this.isRunningTask) {
+								const last = this.conversation.filter(m => m.role === 'assistant').pop();
+								const result = last ? last.content : 'No response.';
+								const resolve = this._taskResolve;
+								this.isRunningTask = false;
+								this._taskResolve = null;
+								this._taskReject = null;
+								if (resolve) resolve(result);
+							}
+							// 处理队列中的下一个任务
+							this.isProcessing = false;
+							this.processQueue();
+						},
+						_onTaskError(err) {
+							if (this.isRunningTask) {
+								const reject = this._taskReject;
+								this.isRunningTask = false;
+								this._taskResolve = null;
+								this._taskReject = null;
+								if (reject) reject(err);
+							}
+							// 处理队列中的下一个任务
+							this.isProcessing = false;
+							this.processQueue();
+						},
+						processQueue() {
+							if (this.isProcessing) return;
+							if (this.taskQueue.length === 0) return;
+
+							this.isProcessing = true;
+							const next = this.taskQueue.shift();
+							const { task, context, resolve, reject } = next;
+
+							// 设置当前任务
+							this.isRunningTask = true;
+							this._taskResolve = resolve;
+							this._taskReject = reject;
+
+							// 清空旧对话，开始新任务
+							this.conversation = [];
+							const fullMessage = task + (context ? '\n\nContext: ' + context : '');
+							this.conversation.push({
+								content: fullMessage,
+								role: 'user',
+							});
+
+							// 打开对话框（如果未打开）
+							const settingStore = useSettingStore();
+							if (!settingStore.subagentDialog) {
+								settingStore.subagentDialog = true;
+							}
+
+							// 启动推理
+							this.startInference();
+						},
+						resetTaskState() {
+						  this.isRunningTask = false;
+						  this.taskQueue = [];
+						  this._taskResolve = null;
+						  this._taskReject = null;
+						  this.isProcessing = false;
+						  this.generating = false;
+						  this.conversation = [];
+						},
+                    }
+                });
+
                 const chatbotStore = useChatbotStore();
                 const messageStore = useMessageStore();
                 const historyStore = useHistoryStore();
                 const defaultChoiceStore = useDefaultChoiceStore();
                 const languageStore = useLanguageStore();
+                const subagentStore = useSubagentStore();
+				
+				subagentStore.resetTaskState();
+				
 
                 // Expose stores to global scope so pgpy editor's plain JS can access AI chat
                 window.__messageStore = messageStore;
                 window.__chatbotStore = chatbotStore;
                 window.__historyStore = historyStore;
+                window.__subagentStore = subagentStore;
+				
+				window.__settingStore = settingStore;
 
-                const createCompletion = async (rawconversation) => {
+                // ─── createCompletion: 核心对话引擎，可被主 agent 和 subagent 复用 ──
+                const createCompletion = async (rawconversation, generatingRef, storeContext, options = {}) => {
+                    // 过滤掉不需要的字段
                     const conversation = rawconversation.reduce((newConversation, item) => {
                         if (item.role === "assistant") {
                             const { reasoning_content, ...rest } = item;
                             newConversation.push(rest);
-                        }
-                        // (item.role === "user" && item.content[0].type === "image_url") {
-                        //     // Image is too large, only latest query could be kept
-                        //     newConversation = [item];
-                        // }
-                        else {
+                        } else {
                             newConversation.push(item);
                         }
                         return newConversation;
                     }, []);
-                    // const conversation = rawconversation
+
                     try {
-                        messageStore.generating = true
-                        // Create a completion (axios is not used here because it does not support streaming)
+                        if (generatingRef !== undefined && generatingRef !== null) {
+                            // 支持直接传入 ref 或 store 的 generating 属性
+                            if (typeof generatingRef === 'boolean') {
+                                // 如果直接传入 boolean，则使用 storeContext 来设置
+                                if (storeContext && storeContext.generating !== undefined) {
+                                    storeContext.generating = true;
+                                }
+                            } else if (typeof generatingRef === 'object' && 'value' in generatingRef) {
+                                generatingRef.value = true;
+                            } else if (typeof generatingRef === 'object' && generatingRef.generating !== undefined) {
+                                generatingRef.generating = true;
+                            }
+                        }
+
                         const headers = {
                             "Content-Type": chatbotStore.contentType,
                         };
-
-                        if (chatbotStore.apiKey) headers.Authorization = `${chatbotStore.authPrefix} ${chatbotStore.apiKey}`
+                        if (chatbotStore.apiKey) headers.Authorization = `${chatbotStore.authPrefix} ${chatbotStore.apiKey}`;
 
                         const body = {
                             messages: await agentStore.promptMessage(conversation),
                             model: chatbotStore.model,
                             stream: chatbotStore.stream,
-                        }
+                        };
 
                         if (chatbotStore.max_tokens_value) {
-                            body[chatbotStore.max_tokens_type] = parseInt(chatbotStore.max_tokens_value)
+                            body[chatbotStore.max_tokens_type] = parseInt(chatbotStore.max_tokens_value);
                         }
-
-                        // Always send explicit temperature/top_p — stabilizes request body JSON
-                        // Uses user value if set, otherwise DeepSeek defaults
-                        body["temperature"] = chatbotStore.temperature ? parseFloat(chatbotStore.temperature) : 1.0
-                        body["top_p"] = chatbotStore.top_p ? parseFloat(chatbotStore.top_p) : 1.0
+                        body["temperature"] = chatbotStore.temperature ? parseFloat(chatbotStore.temperature) : 1.0;
+                        body["top_p"] = chatbotStore.top_p ? parseFloat(chatbotStore.top_p) : 1.0;
 
                         if (chatbotStore.mcp) {
-                            body["tools"] = await mcpStore.listTools()
-                        }
+							let tools = await mcpStore.listTools();
+							if (options.excludeTools && Array.isArray(options.excludeTools)) {
+								tools = tools.filter(t => !options.excludeTools.includes(t.function.name));
+							}
+							body["tools"] = tools;
+						}
 
                         const request = {
                             headers: headers,
@@ -3247,146 +3724,148 @@
                             request
                         );
 
-                        console.log(completion)
-
-                        // Handle errors
                         if (!completion.ok) {
                             const errorData = await completion.json();
-                            console.log(errorData.error?.message);
                             if (errorData.error?.message)
                                 snackbarStore.showErrorMessage(`${completion.status}: ${errorData.error.message}`);
-                            else if (errorData.detail[0]?.msg)
+                            else if (errorData.detail?.[0]?.msg)
                                 snackbarStore.showErrorMessage(`${completion.status}${(" - " + errorData.detail[0]?.loc + ":") || ":"} ${errorData.detail[0]?.msg}`);
                             else
                                 snackbarStore.showErrorMessage(`${completion.status}: ${completion.statusText}`);
                             return;
                         }
 
-                        // Create a reader
                         const reader = completion.body?.getReader();
                         if (!reader) {
                             snackbarStore.showErrorMessage('$vuetify.dataIterator.snackbar.parseStreamFail');
+                            return;
                         }
 
-                        // Add the bot message
-                        messageStore.conversation.push({
+                        // 添加 assistant 消息
+                        rawconversation.push({
                             content: "",
                             reasoning_content: "",
                             tool_calls: [],
                             role: "assistant",
                         });
 
-                        let buffer = ''
+                        let buffer = '';
 
-                        // Read the stream
-                        await read(reader, messageStore.conversation.at(-1), buffer, chatbotStore.stream);
+                        await read(reader, rawconversation, buffer, chatbotStore.stream, generatingRef, storeContext);
+
                     } catch (error) {
                         snackbarStore.showErrorMessage(error.message);
                     } finally {
-                        messageStore.generating = false
+                        if (generatingRef !== undefined && generatingRef !== null) {
+                            if (typeof generatingRef === 'object' && 'value' in generatingRef) {
+                                generatingRef.value = false;
+                            } else if (typeof generatingRef === 'object' && generatingRef.generating !== undefined) {
+                                generatingRef.generating = false;
+                            } else if (typeof generatingRef === 'boolean' && storeContext && storeContext.generating !== undefined) {
+                                storeContext.generating = false;
+                            }
+                        }
                     }
                 };
 
-                const read = async (
-                    reader,
-                    target,
-                    buffer,
-                    stream
-                ) => {
-                    // TextDecoder is a built-in object that allows you to convert a stream of bytes into a string
+                const read = async (reader, conversation, buffer, stream, generatingRef, storeContext) => {
                     const decoder = new TextDecoder();
-                    // Destructure the value returned by reader.read()
                     const { done, value } = await reader.read();
 
-                    // If the stream is done reading, release the lock on the reader
-                    if (done || !messageStore.generating) {
-                        messageStore.generating = false;
+                    // 检查是否应该停止
+                    let shouldStop = false;
+                    if (generatingRef !== undefined && generatingRef !== null) {
+                        if (typeof generatingRef === 'object' && 'value' in generatingRef) {
+                            shouldStop = !generatingRef.value;
+                        } else if (typeof generatingRef === 'object' && generatingRef.generating !== undefined) {
+                            shouldStop = !generatingRef.generating;
+                        } else if (typeof generatingRef === 'boolean' && storeContext && storeContext.generating !== undefined) {
+                            shouldStop = !storeContext.generating;
+                        }
+                    }
+
+                    if (done || shouldStop) {
+                        if (generatingRef !== undefined && generatingRef !== null) {
+                            if (typeof generatingRef === 'object' && 'value' in generatingRef) {
+                                generatingRef.value = false;
+                            } else if (typeof generatingRef === 'object' && generatingRef.generating !== undefined) {
+                                generatingRef.generating = false;
+                            } else if (typeof generatingRef === 'boolean' && storeContext && storeContext.generating !== undefined) {
+                                storeContext.generating = false;
+                            }
+                        }
                         return reader.releaseLock();
                     }
-                    // Convert the stream of bytes into a string
+
                     const chunks = decoder.decode(value);
 
                     if (stream) {
-                        // Split stream
-                        let parts = chunks.split('\n')
-
+                        let parts = chunks.split('\n');
                         if (parts.length === 1) {
-                            buffer += parts[0]
-                            return read(reader, target, buffer, stream);
+                            buffer += parts[0];
+                            return read(reader, conversation, buffer, stream, generatingRef, storeContext);
                         }
-
                         if (buffer.length > 0) {
                             parts[0] = buffer + parts[0];
-                            buffer = ''
+                            buffer = '';
                         }
-
                         const last = parts[parts.length - 1];
                         if (last && last.length > 0) {
                             buffer = parts.pop();
                         }
-
                         parts
                             .map((line) => line.trim())
                             .filter((line) => line.length > 0)
                             .forEach((line) => {
                                 const pos = line.indexOf(':');
                                 const name = line.substring(0, pos);
-                                if (name !== 'data') {
-                                    return
-                                }
-                                const content = line.substring(pos + 1).trim()
-                                if (content.length === 0) {
-                                    return
-                                } else if (content === "[DONE]") {
-                                    return
-                                }
-                                parseJson(content, target)
-                            })
-
+                                if (name !== 'data') return;
+                                const content = line.substring(pos + 1).trim();
+                                if (content.length === 0 || content === "[DONE]") return;
+                                parseJson(content, conversation);
+                            });
                     } else {
-                        parseJson(chunks, target)
+                        parseJson(chunks, conversation);
                     }
 
-                    // Repeat the process
-                    return read(reader, target, buffer, stream);
+                    return read(reader, conversation, buffer, stream, generatingRef, storeContext);
                 };
 
-                const parseJson = (content, target) => {
+                const parseJson = (content, conversation) => {
                     try {
-                        const parsed = JSON.parse(content)
-                        // const choice = 
-                        parseChoices(parsed, target)
-                        // parseChoice(choice, target)
+                        const parsed = JSON.parse(content);
+                        parseChoices(parsed, conversation);
                     } catch (e) {
-                        console.log(e, content)
-                        parseChoice(content, target)
+                        console.log(e, content);
+                        parseChoice(content, conversation);
                     }
                 };
 
-                const parseChoices = (parsed, target) => {
+                const parseChoices = (parsed, conversation) => {
                     if ('choices' in parsed) {
                         return parsed.choices.map((choice) => {
-                            const content = choice.delta || choice.message
-                            return parseChoice(content, target)
-                        })
+                            const content = choice.delta || choice.message;
+                            return parseChoice(content, conversation);
+                        });
                     } else if ('response' in parsed) {
-                        return parseChoice(parsed.response, target)
+                        return parseChoice(parsed.response, conversation);
                     } else {
-                        return parseChoice(parsed, target)
+                        return parseChoice(parsed, conversation);
                     }
                 };
 
-                const parseChoice = (choice, target) => {
+                const parseChoice = (choice, conversation) => {
                     if (choice) {
-                        if (target.role == 'assistant') {
+                        const target = conversation.at(-1);
+                        if (target && target.role === 'assistant') {
                             if (typeof choice === 'string') {
-                                target.content += choice
+                                target.content += choice;
                             } else if (typeof choice.content === 'string') {
-                                target.content += choice.content
+                                target.content += choice.content;
                             } else if (typeof choice.reasoning_content === 'string') {
-                                target.reasoning_content += choice.reasoning_content
+                                target.reasoning_content += choice.reasoning_content;
                             }
-                            parseTool(choice.tool_calls, target)
+                            parseTool(choice.tool_calls, target);
                         }
                     }
                 };
@@ -3394,28 +3873,25 @@
                 const parseTool = (tools, target) => {
                     if (tools) {
                         tools.map((tool) => {
-                            const lastTool = target.tool_calls.at(-1)
+                            const lastTool = target.tool_calls.at(-1);
                             if (lastTool && (!tool.id || lastTool.id == tool.id)) {
-                                const source = tool.function
+                                const source = tool.function;
                                 for (const key in source) {
-                                    // Determine if source[key] is null, skip if it is null
-                                    if (source[key] === null) {
-                                        continue;
-                                    }
+                                    if (source[key] === null) continue;
                                     if (lastTool.function[key]) {
                                         lastTool.function[key] += source[key];
                                     } else {
                                         lastTool.function[key] = source[key];
                                     }
                                 }
-
                             } else {
-                                target.tool_calls.push(tool)
+                                target.tool_calls.push(tool);
                             }
-                        })
+                        });
                     }
                 };
 
+                // ─── Watchers for auto-scroll ──────────────────────────────────
                 watch(computed(() => messageStore.conversation.at(-1)?.content),
                     (newValue, oldValue) => {
                         if (newValue !== oldValue) {
@@ -3423,40 +3899,55 @@
                         }
                     }, { deep: true });
 
+                // Subagent auto-scroll
+                watch(computed(() => subagentStore.conversation.at(-1)?.content),
+                    (newValue, oldValue) => {
+                        if (newValue !== oldValue) {
+                            nextTick(() => {
+                                const container = document.getElementById('subagentChatContainer');
+                                if (container) {
+                                    container.scrollTop = container.scrollHeight;
+                                }
+                            });
+                        }
+                    }, { deep: true });
+
+                // 当 subagent 对话变化时（新消息推送），也滚动
+                watch(computed(() => subagentStore.conversation.length),
+                    () => {
+                        nextTick(() => {
+                            const container = document.getElementById('subagentChatContainer');
+                            if (container) {
+                                container.scrollTop = container.scrollHeight;
+                            }
+                        });
+                    });
+
                 watch(computed(() => messageStore.images),
-					(newValue, oldValue) => {
-						if (newValue.length === 0) {
-							messageStore.base64 = '';
-						} else {
-							const file = messageStore.images; // 假设你只处理第一张图片（单图上传）
-
-							const reader = new FileReader();
-
-							reader.onload = (e) => {
-								// 直接使用原始数据 URL，不做任何处理
-								messageStore.base64 = e.target.result;
-							};
-
-							reader.onerror = (error) => {
-								console.error('读取图片失败:', error);
-								messageStore.base64 = '';
-							};
-
-							reader.readAsDataURL(file);
-						}
-					}, { deep: true });
+                    (newValue, oldValue) => {
+                        if (newValue.length === 0) {
+                            messageStore.base64 = '';
+                        } else {
+                            const file = messageStore.images;
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                messageStore.base64 = e.target.result;
+                            };
+                            reader.onerror = (error) => {
+                                console.error('读取图片失败:', error);
+                                messageStore.base64 = '';
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    }, { deep: true });
 
                 const asyncScrollToBottom = async () => {
-                    // await nextTick();
                     requestAnimationFrame(() => {
                         scrollToBottom(document.querySelector(".chat-bot"));
                     });
-                }
+                };
 
-                const scrollToBottom = (
-                    element,
-                    options = { behavior: "auto" }
-                ) => {
+                const scrollToBottom = (element, options = { behavior: "auto" }) => {
                     window.scrollTo({
                         ...options,
                         top: element?.scrollHeight
@@ -3465,21 +3956,20 @@
 
                 const initLottie = () => {
                     lottie.loadAnimation({
-                        container: document.getElementById('lottie'), // the dom element that will contain the animation
+                        container: document.getElementById('lottie'),
                         renderer: 'svg',
                         loop: true,
                         autoplay: true,
-                        path: './lottie.json' // the path to the animation json
+                        path: './lottie.json'
                     });
                 };
 
                 onMounted(async () => {
                     initLottie();
                     agentStore.initAgent();
-                    resizeAvatar()
-                    window.onresize = () => resizeAvatar()
-                    resizeInputBox()
-                    // Initialize PGPy editor now that it's always visible
+                    resizeAvatar();
+                    window.onresize = () => resizeAvatar();
+                    resizeInputBox();
                     setTimeout(() => {
                         if (typeof initPgpEditor === 'function') initPgpEditor();
                     }, 200);
@@ -3492,7 +3982,7 @@
                             if (entry.target === inputBox) {
                                 const chatElement = document.querySelector(".chat-bot");
                                 if (chatElement) {
-                                    chatElement.style.marginBottom = `${Math.max(entry.contentRect.height, 122)}px`
+                                    chatElement.style.marginBottom = `${Math.max(entry.contentRect.height, 122)}px`;
                                 }
                             }
                         }
@@ -3504,29 +3994,26 @@
                 };
 
                 const resizeAvatar = () => {
-                    // console.log(window.innerWidth)
                     if (window.innerWidth <= 1279) {
-                        settingStore.avatarSize = 26
+                        settingStore.avatarSize = 26;
                     } else {
-                        settingStore.avatarSize = 36
+                        settingStore.avatarSize = 36;
                     }
                 };
 
-                const configFile = ref(null)
+                const configFile = ref(null);
 
                 watch(configFile, (newValue, oldValue) => {
                     if (newValue) {
-
                         const reader = new FileReader();
                         reader.onload = (event) => {
                             try {
-                                const json = JSON.parse(event.target.result)
-                                chatbotStore.updateStoreFromJSON(json.chatbotStore)
-                                defaultChoiceStore.updateStoreFromJSON(json.defaultChoiceStore)
+                                const json = JSON.parse(event.target.result);
+                                chatbotStore.updateStoreFromJSON(json.chatbotStore);
+                                defaultChoiceStore.updateStoreFromJSON(json.defaultChoiceStore);
                             } catch {
-                                snackbarStore.showErrorMessage('$vuetify.dataIterator.snackbar.parseConfigFail')
+                                snackbarStore.showErrorMessage('$vuetify.dataIterator.snackbar.parseConfigFail');
                             }
-
                         };
                         reader.readAsText(newValue);
                     }
@@ -3536,16 +4023,14 @@
                     (newValue, oldValue) => {
                         const reader = new FileReader();
                         if (agentStore.card?.refFile === null) {
-                            agentStore.card.refText = ""
-                            return
+                            agentStore.card.refText = "";
+                            return;
                         }
                         if (newValue?.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
                             reader.onload = (event) => {
                                 mammoth.extractRawText({ arrayBuffer: event.target.result })
                                     .then(function (result) {
-                                        var text = result.value; // The raw text
-                                        agentStore.card.refText = text
-                                        // var messages = result.messages; // The warning
+                                        agentStore.card.refText = result.value;
                                     })
                                     .catch(function (error) {
                                         console.error(error);
@@ -3554,23 +4039,20 @@
                             reader.readAsArrayBuffer(newValue);
                         } else if (newValue?.name?.length > 0) {
                             reader.onload = (event) => {
-                                agentStore.card.refText = event.target.result
+                                agentStore.card.refText = event.target.result;
                             };
                             reader.readAsText(newValue);
                         }
-
                     }, { deep: true });
 
                 document.fonts.ready.then(() => {
-                    settingStore.fontStatus = true
+                    settingStore.fontStatus = true;
                 });
 
-
-
                 const resetALL = () => {
-                    historyStore.resetState()
-                    chatbotStore.resetState()
-                    defaultChoiceStore.resetState()
+                    historyStore.resetState();
+                    chatbotStore.resetState();
+                    defaultChoiceStore.resetState();
                 };
 
                 return {
@@ -3584,6 +4066,7 @@
                     mcpStore,
 
                     messageStore,
+                    subagentStore,
                     defaultChoiceStore,
                     chatbotStore,
                     historyStore,
@@ -3591,11 +4074,9 @@
                     languageStore,
 
                     resetALL,
-
                 };
             }
-
-        })
+        });
 
         const messages = {
             en: {
@@ -3783,34 +4264,30 @@
                     },
                 },
             },
-        }
-		
-		
-	
+        };
 
         const i18n = createI18n({
-            legacy: false, // Vuetify does not support the legacy mode of vue-i18n
+            legacy: false,
             locale: 'en',
             fallbackLocale: 'en',
             messages,
-        })
+        });
 
         const vuetify = createVuetify({
             locale: {
                 adapter: { i18n, useI18n },
             },
-        })
-        const pinia = createPinia()
+        });
+        const pinia = createPinia();
 
-        pinia.use(piniaPersist.default)
+        pinia.use(piniaPersist.default);
 
-        app.use(i18n)
-        app.use(vuetify)
-        app.use(pinia)
-        app.use(MdEditorV3.MdPreview)
+        app.use(i18n);
+        app.use(vuetify);
+        app.use(pinia);
+        app.use(MdEditorV3.MdPreview);
 
-        app.mount('#app')
-
+        app.mount('#app');
     </script>
 
     <!-- ══════════════════════════════════════════════════════════════ -->
@@ -3968,12 +4445,7 @@
       const content = pgpyEditor ? pgpyEditor.getValue().trim() : '';
       if (!content) return;
 
-      const mode = 'Python';
-      const prefix = '# Python Code (running on Pyodide, Python in browser via WebAssembly)\n';
-
-      // Build the message content for AI
-	  const messageText = content;
-      // Update AI mode run button state
+      const messageText = content;
       const runBtn = document.getElementById('runBtn');
       if (runBtn) { runBtn.disabled = true; runBtn.innerHTML = '⏳ <span class="pgpy-label-text">AI Thinking...</span>'; }
 
@@ -3981,11 +4453,9 @@
         const ms = window.__messageStore;
         if (!ms) { alert('Chat system not ready yet.'); return; }
 
-        // Add user message
         ms.userMessage = messageText;
         ms.sendMessage();
 
-        // Scroll to see the response
         setTimeout(() => {
           const chatBot = document.querySelector('.chat-bot');
           if (chatBot) {
@@ -4375,7 +4845,6 @@ sys.stderr = __stderr_capture`);
                 const sz = stat.size;
                 let fileContent = '';
                 try {
-                  // 先读二进制判断类型
                   const rawBin = FS.readFile(full, { encoding: 'binary' });
                   const isZipOffice = rawBin.length >= 4 &&
                     rawBin[0] === 0x50 && rawBin[1] === 0x4B &&
@@ -4384,18 +4853,15 @@ sys.stderr = __stderr_capture`);
                     (rawBin[0] === 0x89 && rawBin[1] === 0x50 && rawBin[2] === 0x4E && rawBin[3] === 0x47) || // PNG
                     (rawBin[0] === 0xFF && rawBin[1] === 0xD8) // JPEG
                   );
-                  // PDF（%PDF 魔数）: 用 @iyulab/anydoc 解析为 Markdown
                   const isPdf = rawBin.length >= 4 &&
                     rawBin[0] === 0x25 && rawBin[1] === 0x50 &&
                     rawBin[2] === 0x44 && rawBin[3] === 0x46;
-                  // 旧版 Office 二进制格式（xls/doc/ppt/xlsb 等，OLE2/CFB 容器）
                   const isOleOffice = rawBin.length >= 8 &&
                     rawBin[0] === 0xD0 && rawBin[1] === 0xCF &&
                     rawBin[2] === 0x11 && rawBin[3] === 0xE0 &&
                     rawBin[4] === 0xA1 && rawBin[5] === 0xB1 &&
                     rawBin[6] === 0x1A && rawBin[7] === 0xE1;
 
-                  // 文档（docx/xlsx/pptx/xls/pdf 等）: 用 @iyulab/anydoc 解析为 Markdown 展示
                   if ((isZipOffice || isOleOffice || isPdf) && typeof window.__undocParse === 'function') {
                     try {
                       const result = window.__undocParse(rawBin);
@@ -4404,7 +4870,6 @@ sys.stderr = __stderr_capture`);
                       if (!md || md.trim() === '') {
                         md = result.toText();
                       }
-                      // 截断至 500 字符显示，完整内容在 title 中
                       const header = `[${format.toUpperCase()}] `;
                       fileContent = md.length > 490 ? header + md.substring(0, 490) + '...' : header + md;
                     } catch (_) {
@@ -4415,7 +4880,6 @@ sys.stderr = __stderr_capture`);
                   } else {
                     const raw = FS.readFile(full, { encoding: 'utf8' });
                     fileContent = typeof raw === 'string' ? raw : '';
-                    // 兜底：含 null 字节则标记为二进制
                     if (fileContent.includes('\u0000')) {
                       fileContent = '[Binary file]';
                     }
@@ -4423,7 +4887,6 @@ sys.stderr = __stderr_capture`);
                 } catch (_) {
                   fileContent = '[Binary file]';
                 }
-                // 超长内容截断显示，保留完整内容在title中
                 const displayContent = fileContent.length > 500 ? fileContent.substring(0, 500) + '...' : fileContent;
                 entries.push({ name: full, type: '📄 file', size: sz >= 1024 ? (sz/1024).toFixed(1)+' KB' : sz+' B', modified: pgpyFormatMtime(stat), file_content: displayContent });
               }
@@ -4582,7 +5045,6 @@ sys.stderr = __stderr_capture`);
     }
 
     // Update the local copy of initPyodide to also update pgpyStatus
-    // (the original in head script updates #status on the main page)
     const _origInitPyodide = window.initPyodide;
 
     window.initPyodide = async function() {
