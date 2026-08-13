@@ -124,6 +124,32 @@
     <!-- Vue Draggable -->
     <script src="Sortable.min.js"></script>
     <script src="vuedraggable.umd.min.js"></script>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Pyodide 运行时 —— 路径一：依赖浏览器 HTTP 缓存（零代码）
+
+         dist2/bundle.js 是自托管的 Pyodide 完整运行时包（约 32 MB）：
+         pyodide.asm.wasm、python_stdlib.zip、pyodide-lock.json 以及全部
+         内置 wheel 均已以 base64 内嵌进该文件，bundle.js 通过补丁
+         window.fetch 从 Blob 直接提供这些文件 —— 运行时不再发起任何网络请求。
+
+         因此缓存优化只需针对这一个文件，且无需任何 JS 缓存代码：
+           • <script> 资源由浏览器自动按 HTTP 缓存规则缓存（第二次打开
+             直接读磁盘缓存，跳过下载）。
+           • 前提：服务器必须为静态资源设置 Cache-Control 响应头。示例
+             （nginx）：
+                 location ~* \.js$ {
+                     add_header Cache-Control "public, max-age=31536000, immutable";
+                 }
+             Python http.server 默认不设 Cache-Control，但会返回
+             Last-Modified，浏览器会以 304 重新校验，同样避免重下 32 MB。
+           • 文件名保持稳定（dist2/bundle.js），切勿追加 ?v=xxx 之类的
+             query 参数做缓存击穿，否则每次都会强制重新下载整个文件。
+           • 升级 bundle 时：重命名文件（如 bundle-v2.js）并同步修改
+             下面的引用即可，"immutable" 缓存下旧文件自然淘汰。
+         ══════════════════════════════════════════════════════════════════ -->
+    <!-- 提前开始下载 32 MB 的 bundle（与上方其它库并行），脚本标签会复用该预取结果 -->
+    <link rel="preload" as="script" fetchpriority="high" href="./dist2/bundle.js">
     <script src="dist2/bundle.js"></script>
 
     <!-- CodeMirror 5 for PGPy Editor -->
@@ -193,6 +219,8 @@
       try {
         statusEl.className = 'status-badge loading';
         statusEl.textContent = '⏳ Loading Pyodide runtime...';
+        // 核心运行时（wasm/stdlib/lock/内置包）全部内嵌在 dist2/bundle.js，
+        // 由 fetch 补丁从 Blob 提供，此处不会产生网络请求；只需等 bundle.js 本身（缓存命中后秒开）。
         pyodide = await loadPyodide({ indexURL: './dist2/' });
         pyodideReady = true;
         updateRunButton();
@@ -420,7 +448,7 @@
 
         /* ─── Subagent dialog specific styles ─── */
         .subagent-dialog {
-            width: 820px;
+            position: fixed;
             max-width: 95vw;
             max-height: 85vh;
         }
@@ -429,7 +457,8 @@
             overflow: hidden;
         }
         .subagent-dialog .subagent-chat-area {
-            max-height: 55vh;
+            flex: 1;
+            min-height: 0;
             overflow-y: auto;
             padding: 8px 4px 4px 4px;
             background: #f8fafc;
@@ -583,6 +612,51 @@
         .subagent-dialog .subagent-chat-area::-webkit-scrollbar-track {
             background: transparent;
         }
+        /* ─── 多窗口：可拖动、可缩放、点击置顶（不再使用 v-dialog 全屏遮罩） ─── */
+        /* 每个窗口是固定定位的独立面板：标题栏可拖动，右下角把手可缩放；
+           鼠标按下（mousedown）时把窗口提到最前，没有 hover 置顶，避免闪烁。 */
+        .subagent-window {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border-radius: 16px;
+        }
+        .subagent-window .v-card {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.22) !important;
+        }
+        .subagent-window-header {
+            cursor: move;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        /* 右下角缩放把手 */
+        .subagent-resize-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            cursor: nwse-resize;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+            padding: 2px;
+            color: #94a3b8;
+            z-index: 6;
+            touch-action: none;
+        }
+        .subagent-resize-handle .mdi {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+        .subagent-resize-handle:hover .mdi {
+            opacity: 1;
+            color: #1867C0;
+        }
     </style>
 
     <!-- pgpy-editor styles -->
@@ -616,7 +690,7 @@
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
           background: var(--bg-primary);
           color: var(--text-primary);
-          height: 50vh;
+          height: 60vh;
           min-height: 300px;
           display: flex;
           flex-direction: column;
@@ -930,10 +1004,19 @@
                                 v-tooltip:end="$t('$vuetify.dataIterator.q.title')">
                             </v-btn>
                         </v-badge>
-                        <!-- ─── NEW: Subagent button ─── -->
-                        <v-btn variant="elevated" icon="mdi-robot-outline" @click="settingStore.subagentDialog = true"
+                        <!-- ─── NEW: Subagent button（每次点击打开一个新的独立窗口）─── -->
+                        <v-btn variant="elevated" icon="mdi-robot-outline" @click="subagentStore.openWindow()"
                             v-tooltip:end="'Subagent Chat'">
                         </v-btn>
+                        <!-- ─── 一键隐藏 / 显示所有子窗口 ─── -->
+                        <v-badge v-if="subagentStore.windows.length > 0" :content="subagentStore.windows.length"
+                            color="info" max="99" location='top left'>
+                            <v-btn variant="elevated"
+                                :icon="subagentStore.hidden ? 'mdi-eye' : 'mdi-eye-off'"
+                                @click="subagentStore.toggleHideAll()"
+                                v-tooltip:end="subagentStore.hidden ? 'Show all subagent windows' : 'Hide all subagent windows'">
+                            </v-btn>
+                        </v-badge>
                     </v-speed-dial>
                     <v-container>
                         <v-row>
@@ -1420,45 +1503,50 @@
             </v-dialog>
 
             <!-- ════════════════════════════════════════════════════════════ -->
-            <!--  SUBAGENT DIALOG                                           -->
+            <!--  SUBAGENT WINDOWS  (多个独立窗口：可拖动、点击置顶)           -->
             <!-- ════════════════════════════════════════════════════════════ -->
-            <v-dialog v-model="settingStore.subagentDialog" class="subagent-dialog" persistent>
+            <div v-for="win in subagentStore.windows" :key="win.id" class="subagent-dialog subagent-window"
+                v-show="!subagentStore.hidden"
+                :style="{ left: win.x + 'px', top: win.y + 'px', zIndex: win.z, width: win.width + 'px', height: win.height + 'px' }"
+                @mousedown="subagentStore.bringToFront(win.id)"
+                @focusin="subagentStore.bringToFront(win.id)">
                 <v-card>
-                    <!-- Header -->
-                    <v-card-title class="d-flex align-center pa-3" style="background:#f1f5f9;border-bottom:1px solid #e2e8f0;">
+                    <!-- Header（拖动把手） -->
+                    <v-card-title class="d-flex align-center pa-3 subagent-window-header" style="background:#f1f5f9;border-bottom:1px solid #e2e8f0;"
+                        @mousedown.stop="subagentStore.startDrag(win, $event)">
                         <span class="flex-fill font-weight-bold" style="font-size:16px;">
-                            🤖 Subagent Chat
+                            🤖 {{ win.title }}
                             <span style="font-size:12px;font-weight:400;color:#64748b;margin-left:8px;">
                                 (independent session)
                             </span>
                         </span>
-                        <v-btn variant="text" icon="mdi-close" size="small" @click="settingStore.subagentDialog = false"></v-btn>
+                        <v-btn variant="text" icon="mdi-close" size="small" @click="subagentStore.removeWindow(win.id)"></v-btn>
                     </v-card-title>
 
                     <!-- Toolbar -->
                     <div class="subagent-toolbar">
-                        <button class="subagent-toolbar-btn" @click="subagentStore.clearConversation()" title="Clear chat">
+                        <button class="subagent-toolbar-btn" @click="win.clearConversation()" title="Clear chat">
                             <span class="mdi mdi-delete-outline"></span> Clear
                         </button>
-                        <button class="subagent-toolbar-btn" @click="subagentStore.exportConversation()" title="Export chat">
+                        <button class="subagent-toolbar-btn" @click="win.exportConversation()" title="Export chat">
                             <span class="mdi mdi-download"></span> Export
                         </button>
                         <span class="subagent-spacer"></span>
-                        <span class="subagent-badge" v-if="subagentStore.taskQueue.length > 0">
-							{{ subagentStore.taskQueue.length }} pending
+                        <span class="subagent-badge" v-if="win.taskQueue.length > 0">
+							{{ win.taskQueue.length }} pending
 						</span>
                     </div>
 
                     <!-- Chat area -->
-                    <div class="subagent-chat-area" ref="subagentChatContainer" id="subagentChatContainer">
+                    <div class="subagent-chat-area" :id="'subagentChatContainer-' + win.id">
                         <!-- Messages -->
-                        <div v-if="subagentStore.conversation.length === 0" class="subagent-empty-state">
+                        <div v-if="win.conversation.length === 0" class="subagent-empty-state">
                             <span class="mdi mdi-robot-outline"></span>
                             <span>Start a conversation with the subagent</span>
                             <span style="font-size:13px;color:#b0b8c4;">Messages are independent from the main chat</span>
                         </div>
                         <div v-else>
-                            <div v-for="(msg, idx) in subagentStore.conversation" :key="idx" class="chat-message px-2 py-3">
+                            <div v-for="(msg, idx) in win.conversation" :key="idx" class="chat-message px-2 py-3">
                                 <div class="message">
                                     <v-avatar :size="28" class="mt-1 mr-2" :color="msg.role === 'user' ? 'primary' : 'teal'"
                                         :icon="msg.role === 'user' ? 'mdi-account-circle' : 'mdi-lightning-bolt-circle'">
@@ -1493,36 +1581,40 @@
                                 </div>
                             </div>
                             <!-- Typing indicator -->
-                            <div v-if="subagentStore.generating" class="px-2 py-2" style="display:flex;align-items:center;gap:8px;color:#94a3b8;font-size:13px;">
+                            <div v-if="win.generating" class="px-2 py-2" style="display:flex;align-items:center;gap:8px;color:#94a3b8;font-size:13px;">
                                 <span class="mdi mdi-loading mdi-spin" style="font-size:18px;"></span> Subagent is thinking...
                             </div>
                         </div>
                     </div>
 					<!-- 在聊天区域和输入框之间 -->
-					<div v-if="subagentStore.isRunningTask" style="padding:4px 12px;background:#fef9c3;border-radius:4px;font-size:13px;color:#92400e;margin:0 16px;">
+					<div v-if="win.isRunningTask" style="padding:4px 12px;background:#fef9c3;border-radius:4px;font-size:13px;color:#92400e;margin:0 16px;">
 						⏳ Subagent is executing task... (please wait)
 					</div>
                     <!-- Input area -->
                     <div class="subagent-input-area">
                         <textarea
-                            v-model="subagentStore.userMessage"
-                            @keydown="subagentStore.handleKeydown"
+                            v-model="win.userMessage"
+                            @keydown="win.handleKeydown"
                             placeholder="Type a message..."
                             rows="1"
-                            ref="subagentInput"
-                            :disabled="subagentStore.isRunningTask"
+                            :id="'subagentInput-' + win.id"
+                            :disabled="win.isRunningTask"
                             style="flex:1;"
                         ></textarea>
                         <button
                             class="subagent-send-btn"
-                            @click="subagentStore.sendMessage"
-                            :disabled="!subagentStore.userMessage || subagentStore.generating"
+                            @click="win.sendMessage"
+                            :disabled="!win.userMessage || win.generating"
                         >
                             <span class="mdi mdi-arrow-up"></span>
                         </button>
                     </div>
                 </v-card>
-            </v-dialog>
+                <div class="subagent-resize-handle" @mousedown.stop="subagentStore.startResize(win, $event)"
+                    title="Resize">
+                    <span class="mdi mdi-resize-bottom-right"></span>
+                </div>
+            </div>
 
             <div v-if="settingStore.toolboxShow !== true" class="toolbox-button"
                 @click="settingStore.toolboxShow = true">
@@ -2137,16 +2229,13 @@
 		
 		async function run_subagent(params){
 			const subagentStore = window.__subagentStore;
-			const settingStore = window.__settingStore; // 确保已在全局暴露
 			if (!subagentStore) {
 				return JSON.stringify({ success: false, content: [{ type: 'text', text: 'Subagent store not available.' }] });
 			}
 			try {
-				const result = await subagentStore.runTask(params.task, params.context || '');
-				// 任务完成后关闭对话框
-				if (settingStore && settingStore.subagentDialog) {
-					settingStore.subagentDialog = false;
-				}
+				// 每次调用都会打开一个全新的独立 subagent 窗口，
+				// 多个窗口可同时存在（任务完成后窗口保持打开，便于查看结果）
+				const result = await subagentStore.openAndRunTask(params.task, params.context || '');
 				return JSON.stringify({
 					success: true,
 					content: [{ type: 'text', text: `Subagent result: ${result}` }]
@@ -2385,7 +2474,7 @@
                                       },
 									  {
 											name: 'run_subagent',
-											description: 'Launch a subagent dialog to handle a subtask. The subagent will have its own conversation session but shares the same tool set.',
+											description: 'Launch a NEW independent subagent window to handle a subtask. Every call opens its own window with its own conversation session, so multiple subagent windows can run in parallel. The subagent shares the same tool set.',
 											inputSchema: {
 												type: 'object',
 												properties: {
@@ -2765,8 +2854,6 @@
                 toolboxShow: false,
                 fontStatus: false,
 
-                // ─── Subagent dialog control ───
-                subagentDialog: false,
             }),
             actions: {
                 initDialog() {
@@ -3402,24 +3489,11 @@
 
                 // ─── Subagent Store ────────────────────────────────────────────
                 // 完全独立于主 messageStore，但复用相同的调用逻辑
-                const useSubagentStore = defineStore("subagentStore", {
-                    state: () => ({
-                        conversation: [],
-                        userMessage: "",
-                        generating: false,
-						    // ---- 新增 ----
-						isRunningTask: false,
-						_taskResolve: null,
-						_taskReject: null,
-						 // ---- 新增 ----
-						taskQueue: [],          // 存放待执行的任务对象 { task, context, resolve, reject }
-						isProcessing: false,    // 是否正在处理队列
-                    }),
-                    persist: {
-                        enabled: true,
-                        strategies: [{ storage: sessionStorage }],
-                    },
-                    actions: {
+                // ── 每个 subagent 窗口共享的 actions（this === 该窗口对象） ──
+                // 这些 action 会被 Object.assign 到每个窗口对象上，因此 this.xxx
+                // 都指向窗口自身的独立状态（对话 / 任务队列 / 生成状态等）。
+                // 注意：已移除 persist 配置 —— 多窗口对象包含绑定方法，无法安全序列化。
+                const subagentWindowActions = {
                         clearConversation() {
                             if (this.conversation.length === 0) {
                                 snackbarStore.showWarningMessage('Already empty');
@@ -3550,22 +3624,6 @@
                             URL.revokeObjectURL(url);
                             snackbarStore.showSuccessMessage('Exported subagent chat');
                         },
-						openAndSend(task, context = '') {
-							// 打开 Subagent 对话框（如果未打开）
-							const settingStore = useSettingStore();
-							if (!settingStore.subagentDialog) {
-								settingStore.subagentDialog = true;
-								// 等待 DOM 更新后发送消息
-								nextTick(() => {
-									this.userMessage = task + (context ? '\n\nContext: ' + context : '');
-									this.sendMessage();
-								});
-							} else {
-								// 已打开则直接发送
-								this.userMessage = task + (context ? '\n\nContext: ' + context : '');
-								this.sendMessage();
-							}
-						},
 						runTask(task, context) {
 							return new Promise((resolve, reject) => {
 								// 将任务加入队列
@@ -3621,13 +3679,7 @@
 								role: 'user',
 							});
 
-							// 打开对话框（如果未打开）
-							const settingStore = useSettingStore();
-							if (!settingStore.subagentDialog) {
-								settingStore.subagentDialog = true;
-							}
-
-							// 启动推理
+							// 启动推理（窗口创建时已默认可见）
 							this.startInference();
 						},
 						resetTaskState() {
@@ -3639,6 +3691,174 @@
 						  this.generating = false;
 						  this.conversation = [];
 						},
+                };
+
+                // ── 多窗口管理器：负责创建 / 关闭多个独立的 subagent 窗口 ──
+                const useSubagentStore = defineStore("subagentStore", {
+                    state: () => ({
+                        windows: [],   // 所有已打开的 subagent 窗口
+                        _idSeq: 0,     // 窗口自增 id
+                        _zTop: 0,      // 置顶计数器（值越大窗口越靠前）
+                        _drag: null,   // 拖动中的临时状态 { id, startX, startY, origX, origY }
+                        _resize: null, // 缩放中的临时状态 { id, startX, startY, origW, origH }
+                        hidden: false, // 一键隐藏 / 显示所有窗口
+                    }),
+                    actions: {
+                        // 新建一个独立窗口并返回（窗口创建后默认可见）
+                        createWindow(title) {
+                            const id = ++this._idSeq;
+                            // 初始尺寸：适配视口（可拖动缩放，右下角把手）
+                            const w = Math.min(820, window.innerWidth * 0.94);
+                            const h = Math.min(580, window.innerHeight * 0.82);
+                            // 初始位置：按序号层叠排布，并限制在可视区域内
+                            const baseX = 70 + ((id - 1) % 6) * 46;
+                            const baseY = 50 + ((id - 1) % 6) * 38;
+                            const win = reactive({
+                                id,
+                                title: title || `Subagent ${id}`,
+                                x: Math.max(6, Math.min(baseX, window.innerWidth - w - 12)),
+                                y: Math.max(6, Math.min(baseY, window.innerHeight - h - 12)),
+                                z: ++this._zTop,
+                                width: w,
+                                height: h,
+                                conversation: [],
+                                userMessage: "",
+                                generating: false,
+                                isRunningTask: false,
+                                _taskResolve: null,
+                                _taskReject: null,
+                                taskQueue: [],
+                                isProcessing: false,
+                            });
+                            // 绑定窗口级 actions（this === win）
+                            // 注意：模板中 @keydown="win.handleKeydown" 这类"裸方法引用"被 Vue
+                            // 触发时不会携带接收者（编译为 onKeydown: win.handleKeydown），
+                            // 必须显式 bind，否则 this 会丢失、变成 window/undefined。
+                            for (const key in subagentWindowActions) {
+                                win[key] = subagentWindowActions[key].bind(win);
+                            }
+                            this.windows.push(win);
+                            return win;
+                        },
+                        // 从工具栏打开一个新窗口
+                        openWindow() {
+                            const win = this.createWindow();
+                            nextTick(() => {
+                                const input = document.getElementById('subagentInput-' + win.id);
+                                if (input) input.focus();
+                            });
+                            return win;
+                        },
+                        // 关闭并销毁一个窗口
+                        removeWindow(id) {
+                            const idx = this.windows.findIndex(w => w.id === id);
+                            if (idx === -1) return;
+                            const win = this.windows[idx];
+                            // 若该窗口正在执行任务，拒绝任务 Promise，避免 run_subagent 挂起
+                            if (win.isRunningTask && win._taskReject) {
+                                win._taskReject(new Error('Subagent window was closed.'));
+                                win.isRunningTask = false;
+                                win._taskResolve = null;
+                                win._taskReject = null;
+                                win.isProcessing = false;
+                            }
+                            this.windows.splice(idx, 1);
+                            // 没有窗口时复位隐藏状态
+                            if (this.windows.length === 0) this.hidden = false;
+                        },
+                        // 点击窗口时把它提到最前（mousedown / 键盘聚焦）
+                        bringToFront(id) {
+                            const win = this.windows.find(w => w.id === id);
+                            if (win && win.z < this._zTop) {
+                                win.z = ++this._zTop;
+                            }
+                        },
+                        // 一键隐藏 / 显示所有已打开的窗口
+                        toggleHideAll() {
+                            this.hidden = !this.hidden;
+                        },
+                        // 从标题栏拖动窗口（mousemove/mouseup 监听挂在 window 上，
+                        // 鼠标移出窗口也能继续拖动）
+                        startDrag(win, e) {
+                            if (e.button !== 0) return;   // 仅左键拖动
+                            e.preventDefault();
+                            this.bringToFront(win.id);
+                            this._drag = {
+                                id: win.id,
+                                startX: e.clientX,
+                                startY: e.clientY,
+                                origX: win.x,
+                                origY: win.y,
+                            };
+                            window.addEventListener('mousemove', this._onDragMove);
+                            window.addEventListener('mouseup', this._onDragEnd);
+                        },
+                        _onDragMove(e) {
+                            const d = this._drag;
+                            if (!d) return;
+                            const win = this.windows.find(w => w.id === d.id);
+                            if (!win) return;
+                            win.x = d.origX + (e.clientX - d.startX);
+                            win.y = d.origY + (e.clientY - d.startY);
+                        },
+                        _onDragEnd() {
+                            this._drag = null;
+                            window.removeEventListener('mousemove', this._onDragMove);
+                            window.removeEventListener('mouseup', this._onDragEnd);
+                        },
+                        // 从右下角缩放窗口（最小 480x320，最大不超视口）
+                        startResize(win, e) {
+                            if (e.button !== 0) return;
+                            e.preventDefault();
+                            this.bringToFront(win.id);
+                            this._resize = {
+                                id: win.id,
+                                startX: e.clientX,
+                                startY: e.clientY,
+                                origW: win.width,
+                                origH: win.height,
+                            };
+                            window.addEventListener('mousemove', this._onResizeMove);
+                            window.addEventListener('mouseup', this._onResizeEnd);
+                        },
+                        _onResizeMove(e) {
+                            const r = this._resize;
+                            if (!r) return;
+                            const win = this.windows.find(w => w.id === r.id);
+                            if (!win) return;
+                            win.width = Math.min(window.innerWidth * 0.96, Math.max(480, r.origW + (e.clientX - r.startX)));
+                            win.height = Math.min(window.innerHeight * 0.92, Math.max(320, r.origH + (e.clientY - r.startY)));
+                        },
+                        _onResizeEnd() {
+                            this._resize = null;
+                            window.removeEventListener('mousemove', this._onResizeMove);
+                            window.removeEventListener('mouseup', this._onResizeEnd);
+                        },
+                        // 打开一个新窗口并直接发送一条消息
+                        openAndSend(task, context = '') {
+                            const win = this.createWindow();
+                            win.userMessage = task + (context ? '\n\nContext: ' + context : '');
+                            win.sendMessage();
+                            return win;
+                        },
+                        // 打开一个新窗口并在该窗口内执行任务（run_subagent 使用）
+                        openAndRunTask(task, context = '') {
+                            const win = this.createWindow();
+                            return win.runTask(task, context);
+                        },
+                        // 兼容入口：直接通过 store 运行任务（等效于新开一个窗口）
+                        runTask(task, context) {
+                            return this.openAndRunTask(task, context);
+                        },
+                        // 清空所有窗口（应用重载 / 重置时使用）
+                        resetTaskState() {
+                            this.windows = [];
+                            this._idSeq = 0;
+                            this._zTop = 0;
+                            this._drag = null;
+                            this._resize = null;
+                            this.hidden = false;
+                        },
                     }
                 });
 
@@ -3899,28 +4119,28 @@
                         }
                     }, { deep: true });
 
-                // Subagent auto-scroll
-                watch(computed(() => subagentStore.conversation.at(-1)?.content),
-                    (newValue, oldValue) => {
-                        if (newValue !== oldValue) {
-                            nextTick(() => {
-                                const container = document.getElementById('subagentChatContainer');
-                                if (container) {
-                                    container.scrollTop = container.scrollHeight;
-                                }
-                            });
-                        }
-                    }, { deep: true });
-
-                // 当 subagent 对话变化时（新消息推送），也滚动
-                watch(computed(() => subagentStore.conversation.length),
-                    () => {
-                        nextTick(() => {
-                            const container = document.getElementById('subagentChatContainer');
+                // Subagent auto-scroll（对所有已打开的窗口生效）
+                const scrollAllSubagentChats = () => {
+                    nextTick(() => {
+                        subagentStore.windows.forEach(win => {
+                            const container = document.getElementById('subagentChatContainer-' + win.id);
                             if (container) {
                                 container.scrollTop = container.scrollHeight;
                             }
                         });
+                    });
+                };
+                watch(computed(() => subagentStore.windows.map(w => w.conversation.at(-1)?.content).join('\u0001')),
+                    (newValue, oldValue) => {
+                        if (newValue !== oldValue) {
+                            scrollAllSubagentChats();
+                        }
+                    }, { deep: true });
+
+                // 当 subagent 对话变化时（新消息推送），也滚动
+                watch(computed(() => subagentStore.windows.map(w => w.conversation.length).join(',')),
+                    () => {
+                        scrollAllSubagentChats();
                     });
 
                 watch(computed(() => messageStore.images),
