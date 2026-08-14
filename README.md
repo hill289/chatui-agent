@@ -1,5 +1,196 @@
 # 🤖 chatui agent
 
+> A cloud-native AI chatbot interface running entirely in your browser, featuring a built‑in Pyodide Python runtime and an MCP toolchain. It enables you to accomplish AI conversations, code execution, and file processing in a single place. This project showcases what’s possible in the WebAssembly era: capabilities that traditionally required servers (Python runtime, file system) now run locally in your browser. The MCP protocol standardises AI tool invocation, the Subagent architecture offers an elegant way to decompose complex tasks, and most importantly – it demonstrates the viability of *decentralised AI applications*. Your data never leaves your device, yet you enjoy the full power of AI.
+
+---
+
+## 📖 Introduction
+
+**chatui agent** is an open‑source chatbot frontend by hill289. Built with Vue 3 + Vuetify, it is delivered as a pure static HTML page that runs without any Node.js build step.
+
+This is a full‑fledged AI assistant system that runs entirely in the browser – but it’s much more than just a chat interface.
+
+Imagine:
+
+✅ Running real Python code directly in your browser (yes, actual Python!)
+
+✅ AI reading, writing, searching, and editing files
+
+✅ Processing Word, Excel, PowerPoint, and PDF documents
+
+✅ Full file system operations, with ZIP import/export
+
+✅ Subagent mechanism for decomposing complex tasks
+
+✅ Everything runs locally – no backend server required
+
+---
+
+## ✨ Features
+
+🔒 **Privacy‑first**
+- All processing happens locally in your browser
+- No data is uploaded except for AI API calls
+- You have complete control over your files and code
+
+🐍 **Real Python runtime**
+- Powered by Pyodide (Python 3.11 via WebAssembly)
+- Supports NumPy, Pandas, Matplotlib, and many more
+- Python code executes inside the browser sandbox
+
+📁 **Virtual file system**
+- Full POSIX file operations (read, write, search, edit)
+- Process Word (.docx), Excel (.xlsx), PowerPoint (.pptx), and PDF documents
+- Export/import your workspace as a ZIP archive
+
+🛠️ **MCP tool system**
+- `read_file` – smart document parsing (text, images, Office files, PDF)
+- `write_file` – create and modify files
+- `search_content` – regex‑based content search
+- `replace_content` / `add_content` / `delete_content` – precise editing
+- `run_python` – execute Python code (full standard library support)
+- `run_subagent` – delegate complex tasks to focused sub‑agents
+
+🤖 **Subagent architecture**
+- Break down complex tasks into manageable sub‑tasks
+- Dedicated conversation windows for focused processing
+- Automatic task queue management to prevent conflicts
+
+🎯 **Use cases**
+
+| Scenario | Description |
+|----------|-------------|
+| Data analysis | Analyse CSV/Excel files, generate visualisations – no server needed |
+| Document processing | Batch convert, merge, or extract content from Office documents |
+| Code prototyping | Test Python snippets with AI assistance in an isolated environment |
+| Privacy‑sensitive work | Process confidential files without uploading to the cloud |
+| Education | Teach Python + AI concepts without any installation |
+
+---
+
+## 🧰 Technology Stack
+
+| Category | Technologies |
+|----------|--------------|
+| Framework | Vue 3 (CDN), Vuetify 3, Pinia (with persistence), Vue I18n |
+| Editors | CodeMirror 5, md‑editor‑v3 (Markdown preview) |
+| Python runtime | Pyodide (WebAssembly) |
+| Animations | Lottie (lottie‑web) |
+| Drag & drop | vuedraggable (SortableJS) |
+| Document parsing | mammoth.js, @iyulab/anydoc (WASM) |
+| Spreadsheet export | SheetJS (xlsx) |
+| Archiving | JSZip |
+
+---
+
+## 🚀 Quick Start
+
+The project is **pure static HTML** – no build tools required. Place `index.html` together with the static assets in the same directory (see the list below) and serve it with any static web server:
+
+```bash
+# Option 1: directly open
+unzip dist2.zip
+# double‑click index.html
+```
+
+> **Note:** `index.html` references local JS/CSS files via relative paths. Ensure all files are present in the same directory.
+
+---
+
+## ⚙️ Configuration
+
+Click the **gear icon** to the left of the input box to open the **Interface Configuration** dialog.
+
+### Basic Settings
+| Setting | Description | Default Example |
+|---------|-------------|-----------------|
+| API Key | Your model API key | empty |
+| URL | API service endpoint | `https://api.deepseek.com` |
+| Path | API path | `/chat/completions` |
+| Model | Model name | `deepseek-v4-flash` |
+
+### Advanced Settings
+| Setting | Description |
+|---------|-------------|
+| HTTP Method | Request method (default POST) |
+| Stream | Enable streaming output |
+| MCP | Enable MCP tool calls |
+| Max Tokens Prefix | `max_tokens` / `max_completion_tokens` / `max_new_tokens` |
+| Max Token Value | Maximum generated tokens |
+| Temperature | Randomness (0–2) |
+| Top P | Nucleus sampling (0–1) |
+| Content Type | Media type (default `application/json`) |
+| Auth Prefix | Authentication prefix (Bearer / Base / Token) |
+| Config File | Import JSON configuration file |
+
+Configuration is automatically persisted in the browser’s **localStorage**.
+
+---
+
+## 🤝 MCP Prompt Templates
+
+Click the **person icon** next to the chat input to open the list of MCP‑provided prompt templates (Prompts). Select one, fill in the parameters, and quickly generate conversation content.
+
+---
+
+## 📁 Project Structure (Reference)
+
+```bash
+.
+├── index.html                     # Single‑page application entry (all code)
+├── dist2/                         # Pyodide runtime directory
+│   └── bundle.js                  # Pyodide core bundle
+├── vue.global.prod.min.js         # Vue 3 runtime
+├── vuetify.min.js                 # Vuetify components
+├── vuetify.min.css                # Vuetify styles
+├── pinia.iife.prod.js             # Pinia state management
+├── md-editor-index.js             # Markdown editor
+├── lottie.min.js                  # Lottie animation library
+├── mammoth.browser.min.js         # Word document parser
+├── anydoc_wasm_b64.js             # Office/PDF → Markdown (WASM)
+├── codemirror.min.js              # CodeMirror 5 editor
+├── xlsx.full.min.js               # Excel export
+└── jszip.min.js                   # ZIP compression/decompression
+```
+
+---
+
+## 🔒 Privacy Statement
+
+- All configuration and history are stored **locally** (localStorage / sessionStorage)
+- Python code executes inside the local Pyodide sandbox and is **never uploaded** to any server
+- Conversation requests are sent directly from your browser to the API endpoint you configure
+
+---
+
+## 📄 License
+
+Copyright hill289
+
+Licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+This project uses the following open‑source tools, each under its respective license. For details, please refer to their official repositories:
+
+- [Vue 3](https://github.com/vuejs)
+- [Vuetify](https://github.com/vuetifyjs/vuetify)
+- [Pinia](https://github.com/vuejs/pinia)
+- [md-editor-v3](https://github.com/imzbf/md-editor-v3)
+- [lottie-web](https://github.com/airbnb/lottie-web)
+- [vuedraggable](https://github.com/SortableJS/vue.draggable.next)
+- [mammoth](https://github.com/mwilliamson/mammoth.js)
+- [anydoc](https://github.com/firecrawl/anydoc)
+
+---
+
+## 🙏 Acknowledgements
+
+- [AIQL GitHub](https://github.com/AI-QL) – project author
+- Pyodide community – providing the in‑browser Python runtime
+- All authors and maintainers of the open‑source dependencies
+
+中文简介：
+# 🤖 chatui agent
+
 > 一款运行在浏览器中的云原生 AI 聊天机器人界面，内置 Pyodide Python 运行时与 MCP 工具链，帮助你在浏览器中一站式完成 AI 对话、代码执行与文件处理。这个项目展示了 WebAssembly 时代的可能性：传统上需要服务器的功能（Python 运行时、文件系统），现在都能在浏览器实现。MCP 协议让 AI 工具调用标准化，Subagent 架构为复杂任务分解提供了优雅方案，最重要的是：它证明了”去中心化 AI 应用”的可行性。用户数据不必离开本地设备，同时享受完整的 AI 能力。
 
 ---
